@@ -88,15 +88,67 @@
         {{-- Pendapatan 30 Hari --}}
         <div class="col-md-8">
             <div class="card h-100">
-                <div class="card-header">
-                    <i class="bi bi-calendar3 me-2"></i>Pendapatan 30 Hari Terakhir
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <span><i class="bi bi-calendar3 me-2"></i>Rekap Penjualan Lunas – 30 Hari Terakhir</span>
+                    <small class="text-muted" style="font-size:.75rem">
+                        {{ \Carbon\Carbon::now()->subDays(30)->format('d M Y') }} –
+                        {{ \Carbon\Carbon::now()->format('d M Y') }}
+                    </small>
                 </div>
-                <div class="card-body d-flex flex-column justify-content-center p-4">
-                    <p class="text-muted mb-1" style="font-size:.8rem;text-transform:uppercase;letter-spacing:.5px;font-weight:600">Total Pendapatan</p>
-                    <h2 class="fw-800 mb-3" style="color:#10B981;font-weight:800">
-                        Rp {{ number_format($revenueLastMonth ?? 0, 0, ',', '.') }}
-                    </h2>
-                    <div class="d-flex gap-2">
+                <div class="card-body p-4">
+                    {{-- Summary Row --}}
+                    <div class="row g-3 mb-3">
+                        <div class="col-sm-6">
+                            <div class="p-3 rounded-3" style="background:var(--primary-pale)">
+                                <p class="text-muted mb-1" style="font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;font-weight:600">Total Pendapatan</p>
+                                <h4 class="fw-800 mb-0" style="color:#10B981;font-weight:800">
+                                    Rp {{ number_format($revenueLastMonth ?? 0, 0, ',', '.') }}
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="p-3 rounded-3" style="background:var(--primary-pale)">
+                                <p class="text-muted mb-1" style="font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;font-weight:600">Jumlah Transaksi Lunas</p>
+                                <h4 class="fw-800 mb-0" style="color:var(--primary-dark);font-weight:800">
+                                    {{ $countLastMonth ?? 0 }} <small style="font-size:.85rem;font-weight:500">transaksi</small>
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Mini Table Transaksi Lunas Terbaru --}}
+                    @if(($recentLunas30 ?? collect())->count() > 0)
+                    <div class="table-responsive" style="max-height:180px;overflow-y:auto">
+                        <table class="table table-sm mb-0" style="font-size:.8rem">
+                            <thead style="position:sticky;top:0;background:#fff;z-index:1">
+                                <tr>
+                                    <th style="font-size:.72rem">No. Pesanan</th>
+                                    <th style="font-size:.72rem">Pelanggan</th>
+                                    <th style="font-size:.72rem">Tgl Bayar</th>
+                                    <th style="font-size:.72rem" class="text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($recentLunas30 as $lunas)
+                                <tr>
+                                    <td><span class="fw-bold" style="color:var(--primary)">{{ $lunas->nomor_pesanan ?? '#'.$lunas->id }}</span></td>
+                                    <td>{{ $lunas->customer->name ?? 'Anonim' }}</td>
+                                    <td class="text-muted">{{ $lunas->pembayaran_at ? $lunas->pembayaran_at->format('d M Y') : '-' }}</td>
+                                    <td class="text-end fw-bold" style="color:#10B981">Rp {{ number_format($lunas->total_pembayaran ?? 0, 0, ',', '.') }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    @else
+                    <div class="text-center py-3 text-muted" style="font-size:.85rem">
+                        <i class="bi bi-inbox fs-4 d-block mb-1 opacity-40"></i>
+                        Belum ada transaksi lunas dalam 30 hari terakhir
+                    </div>
+                    @endif
+
+                    {{-- Action Buttons --}}
+                    <div class="d-flex gap-2 mt-3">
                         <a href="{{ route('pemilik.sales-report') }}" class="btn btn-primary btn-sm">
                             <i class="bi bi-arrow-right-circle"></i> Lihat Laporan Lengkap
                         </a>
@@ -105,6 +157,41 @@
                         </a>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Recent Orders --}}
+    {{-- ═══════════════════════════════════════════════════ --}}
+    {{-- Chart Penjualan Lunas                              --}}
+    {{-- ═══════════════════════════════════════════════════ --}}
+    <div class="card mb-4">
+        <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <span><i class="bi bi-bar-chart-fill me-2" style="color:var(--primary)"></i>Grafik Penjualan Lunas</span>
+            <div class="d-flex gap-1" id="chartFilterBtns">
+                <button class="btn btn-sm chart-filter-btn active" data-period="harian"
+                    style="border-radius:20px;font-size:.78rem">Harian</button>
+                <button class="btn btn-sm chart-filter-btn" data-period="bulanan"
+                    style="border-radius:20px;font-size:.78rem">Bulanan</button>
+                <button class="btn btn-sm chart-filter-btn" data-period="tahunan"
+                    style="border-radius:20px;font-size:.78rem">Tahunan</button>
+            </div>
+        </div>
+        <div class="card-body p-4">
+            {{-- Info subtitle --}}
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div>
+                    <span id="chartSubtitle" class="text-muted" style="font-size:.8rem">
+                        30 hari terakhir
+                    </span>
+                </div>
+                <div class="text-end">
+                    <span class="text-muted" style="font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;font-weight:600">Total Periode</span><br>
+                    <span id="chartTotalLabel" class="fw-bold" style="font-size:1rem;color:#10B981"></span>
+                </div>
+            </div>
+            <div style="position:relative;height:280px">
+                <canvas id="salesChart"></canvas>
             </div>
         </div>
     </div>
@@ -167,4 +254,162 @@
     </div>
 
 </div>
+
+<style>
+    .chart-filter-btn {
+        background: var(--primary-pale);
+        color: var(--primary-dark);
+        border: 1.5px solid var(--border-color);
+        font-weight: 600;
+        transition: all .2s;
+    }
+    .chart-filter-btn:hover {
+        background: var(--primary);
+        color: var(--primary-dark);
+        border-color: var(--primary);
+    }
+    .chart-filter-btn.active {
+        background: var(--primary);
+        color: var(--primary-dark);
+        border-color: var(--primary);
+        box-shadow: 0 3px 10px rgba(212,175,55,.35);
+    }
+</style>
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+(function () {
+    // ── Data dari PHP ──────────────────────────────────────────────────
+    const datasets = {
+        harian: {
+            labels : @json($chartHarianLabels),
+            revenue: @json($chartHarianData),
+            count  : @json($chartHarianCount),
+            subtitle: '30 hari terakhir',
+        },
+        bulanan: {
+            labels : @json($chartBulananLabels),
+            revenue: @json($chartBulananData),
+            count  : @json($chartBulananCount),
+            subtitle: 'Tahun {{ now()->year }}',
+        },
+        tahunan: {
+            labels : @json($chartTahunanLabels),
+            revenue: @json($chartTahunanData),
+            count  : @json($chartTahunanCount),
+            subtitle: 'Semua tahun',
+        },
+    };
+
+    // ── Helpers ────────────────────────────────────────────────────────
+    function fmtRp(n) {
+        return 'Rp ' + Number(n).toLocaleString('id-ID');
+    }
+    function sumArr(arr) { return arr.reduce((a, b) => a + b, 0); }
+
+    // ── Canvas & Gradient ──────────────────────────────────────────────
+    const ctx = document.getElementById('salesChart').getContext('2d');
+    function makeGradient() {
+        const g = ctx.createLinearGradient(0, 0, 0, 280);
+        g.addColorStop(0, 'rgba(212,175,55,0.85)');
+        g.addColorStop(1, 'rgba(212,175,55,0.15)');
+        return g;
+    }
+
+    // ── Chart Init ─────────────────────────────────────────────────────
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: datasets.harian.labels,
+            datasets: [{
+                label: 'Pendapatan (Rp)',
+                data: datasets.harian.revenue,
+                backgroundColor: makeGradient(),
+                borderColor: '#D4AF37',
+                borderWidth: 1.5,
+                borderRadius: 6,
+                borderSkipped: false,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 500, easing: 'easeInOutQuart' },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#101216',
+                    titleColor: '#D4AF37',
+                    bodyColor: '#fff',
+                    padding: 12,
+                    cornerRadius: 10,
+                    callbacks: {
+                        title: (items) => items[0].label,
+                        label: function(item) {
+                            const period = document.querySelector('.chart-filter-btn.active').dataset.period;
+                            const idx = item.dataIndex;
+                            const cnt = datasets[period].count[idx];
+                            return [
+                                '  ' + fmtRp(item.raw),
+                                '  ' + cnt + ' transaksi',
+                            ];
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: {
+                        color: '#6C757D',
+                        font: { size: 11 },
+                        maxRotation: 45,
+                        autoSkip: true,
+                        maxTicksLimit: 15,
+                    }
+                },
+                y: {
+                    grid: { color: '#F0F7FA', lineWidth: 1 },
+                    border: { dash: [4, 4] },
+                    ticks: {
+                        color: '#6C757D',
+                        font: { size: 11 },
+                        callback: v => v >= 1e6 ? (v/1e6).toFixed(1)+'jt'
+                                    : v >= 1e3 ? (v/1e3).toFixed(0)+'rb' : v,
+                    }
+                }
+            }
+        }
+    });
+
+    // ── Subtitle & Total ───────────────────────────────────────────────
+    function updateMeta(period) {
+        const d = datasets[period];
+        document.getElementById('chartSubtitle').textContent = d.subtitle;
+        document.getElementById('chartTotalLabel').textContent = fmtRp(sumArr(d.revenue));
+    }
+    updateMeta('harian');
+    document.getElementById('chartTotalLabel').textContent = fmtRp(sumArr(datasets.harian.revenue));
+
+    // ── Filter Buttons ─────────────────────────────────────────────────
+    document.querySelectorAll('.chart-filter-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            document.querySelectorAll('.chart-filter-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+
+            const period = this.dataset.period;
+            const d = datasets[period];
+
+            chart.data.labels = d.labels;
+            chart.data.datasets[0].data = d.revenue;
+            chart.data.datasets[0].backgroundColor = makeGradient();
+            chart.update();
+            updateMeta(period);
+        });
+    });
+})();
+</script>
+@endpush
+
 @endsection

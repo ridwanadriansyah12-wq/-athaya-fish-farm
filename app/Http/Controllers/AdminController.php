@@ -368,26 +368,43 @@ class AdminController extends Controller
      */
     public function salesReport(Request $request)
     {
+        // Hanya pemilik yang bisa akses laporan penjualan
+        abort_unless(auth()->user()->isPemilik(), 403, 'Fitur ini hanya tersedia untuk Pemilik.');
+        $filterType = $request->input('filter_type', 'harian');
+        $selectedMonth = $request->input('month', date('m'));
+        $selectedYear = $request->input('year', date('Y'));
+
         $query = Pesanan::with('customer', 'detailPesanan.katalogIkan', 'pembayaran')
             ->where('status', 'lunas');
 
-        // Filter tanggal berdasarkan pembayaran_at (tanggal lunas)
-        if ($request->filled('start_date')) {
-            $query->whereDate('pembayaran_at', '>=', $request->start_date);
-        }
-        if ($request->filled('end_date')) {
-            $query->whereDate('pembayaran_at', '<=', $request->end_date);
+        if ($filterType === 'bulanan') {
+            $query->whereYear('pembayaran_at', $selectedYear)->whereMonth('pembayaran_at', $selectedMonth);
+        } elseif ($filterType === 'tahunan') {
+            $query->whereYear('pembayaran_at', $selectedYear);
+        } else {
+            if ($request->filled('start_date')) {
+                $query->whereDate('pembayaran_at', '>=', $request->start_date);
+            }
+            if ($request->filled('end_date')) {
+                $query->whereDate('pembayaran_at', '<=', $request->end_date);
+            }
         }
 
         $sales = $query->orderBy('pembayaran_at', 'desc')->paginate(15)->withQueryString();
 
         // Statistik — scope sama dengan filter
         $statsQuery = Pesanan::where('status', 'lunas');
-        if ($request->filled('start_date')) {
-            $statsQuery->whereDate('pembayaran_at', '>=', $request->start_date);
-        }
-        if ($request->filled('end_date')) {
-            $statsQuery->whereDate('pembayaran_at', '<=', $request->end_date);
+        if ($filterType === 'bulanan') {
+            $statsQuery->whereYear('pembayaran_at', $selectedYear)->whereMonth('pembayaran_at', $selectedMonth);
+        } elseif ($filterType === 'tahunan') {
+            $statsQuery->whereYear('pembayaran_at', $selectedYear);
+        } else {
+            if ($request->filled('start_date')) {
+                $statsQuery->whereDate('pembayaran_at', '>=', $request->start_date);
+            }
+            if ($request->filled('end_date')) {
+                $statsQuery->whereDate('pembayaran_at', '<=', $request->end_date);
+            }
         }
 
         $totalRevenue = $statsQuery->sum('total_pembayaran');
@@ -395,12 +412,27 @@ class AdminController extends Controller
         $averageSale  = $totalSales > 0 ? $statsQuery->avg('total_pembayaran') : 0;
         $maxSale      = $statsQuery->max('total_pembayaran') ?? 0;
 
+        $availableYears = Pesanan::where('status', 'lunas')
+            ->whereNotNull('pembayaran_at')
+            ->selectRaw('YEAR(pembayaran_at) as year')
+            ->distinct()
+            ->orderBy('year', 'desc')
+            ->pluck('year')
+            ->toArray();
+        if (empty($availableYears)) {
+            $availableYears = [date('Y')];
+        }
+
         return view('admin.report.sales', [
-            'sales'        => $sales,
-            'totalRevenue' => $totalRevenue,
-            'totalSales'   => $totalSales,
-            'averageSale'  => $averageSale,
-            'maxSale'      => $maxSale,
+            'sales'          => $sales,
+            'totalRevenue'   => $totalRevenue,
+            'totalSales'     => $totalSales,
+            'averageSale'    => $averageSale,
+            'maxSale'        => $maxSale,
+            'filterType'     => $filterType,
+            'selectedMonth'  => $selectedMonth,
+            'selectedYear'   => $selectedYear,
+            'availableYears' => $availableYears,
         ]);
     }
 
@@ -409,25 +441,43 @@ class AdminController extends Controller
      */
     public function printSalesReport(Request $request)
     {
+        // Hanya pemilik yang bisa akses laporan penjualan
+        abort_unless(auth()->user()->isPemilik(), 403, 'Fitur ini hanya tersedia untuk Pemilik.');
+        $filterType = $request->input('filter_type', 'harian');
+        $selectedMonth = $request->input('month', date('m'));
+        $selectedYear = $request->input('year', date('Y'));
+
         $query = Pesanan::with('customer', 'detailPesanan.katalogIkan', 'pembayaran')
             ->where('status', 'lunas');
 
-        if ($request->filled('start_date')) {
-            $query->whereDate('pembayaran_at', '>=', $request->start_date);
-        }
-        if ($request->filled('end_date')) {
-            $query->whereDate('pembayaran_at', '<=', $request->end_date);
+        if ($filterType === 'bulanan') {
+            $query->whereYear('pembayaran_at', $selectedYear)->whereMonth('pembayaran_at', $selectedMonth);
+        } elseif ($filterType === 'tahunan') {
+            $query->whereYear('pembayaran_at', $selectedYear);
+        } else {
+            if ($request->filled('start_date')) {
+                $query->whereDate('pembayaran_at', '>=', $request->start_date);
+            }
+            if ($request->filled('end_date')) {
+                $query->whereDate('pembayaran_at', '<=', $request->end_date);
+            }
         }
 
         $allSales = $query->orderBy('pembayaran_at', 'desc')->get();
 
         // Statistik
         $statsQuery = Pesanan::where('status', 'lunas');
-        if ($request->filled('start_date')) {
-            $statsQuery->whereDate('pembayaran_at', '>=', $request->start_date);
-        }
-        if ($request->filled('end_date')) {
-            $statsQuery->whereDate('pembayaran_at', '<=', $request->end_date);
+        if ($filterType === 'bulanan') {
+            $statsQuery->whereYear('pembayaran_at', $selectedYear)->whereMonth('pembayaran_at', $selectedMonth);
+        } elseif ($filterType === 'tahunan') {
+            $statsQuery->whereYear('pembayaran_at', $selectedYear);
+        } else {
+            if ($request->filled('start_date')) {
+                $statsQuery->whereDate('pembayaran_at', '>=', $request->start_date);
+            }
+            if ($request->filled('end_date')) {
+                $statsQuery->whereDate('pembayaran_at', '<=', $request->end_date);
+            }
         }
 
         $totalRevenue = $statsQuery->sum('total_pembayaran');
@@ -441,6 +491,9 @@ class AdminController extends Controller
             'totalSales'   => $totalSales,
             'averageSale'  => $averageSale,
             'maxSale'      => $maxSale,
+            'filterType'   => $filterType,
+            'selectedMonth'=> $selectedMonth,
+            'selectedYear' => $selectedYear,
         ]);
     }
 
@@ -449,6 +502,8 @@ class AdminController extends Controller
      */
     public function financialReport()
     {
+        // Hanya pemilik yang bisa akses laporan keuangan
+        abort_unless(auth()->user()->isPemilik(), 403, 'Fitur ini hanya tersedia untuk Pemilik.');
         $reports = LaporanKeuangan::orderBy('Periode', 'desc')->paginate(15);
 
         return view('admin.report.financial', ['reports' => $reports]);

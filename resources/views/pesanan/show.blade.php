@@ -38,10 +38,17 @@
                                             'pending' => 'warning',
                                             'dikonfirmasi' => 'info',
                                             'ditolak' => 'danger',
+                                            'persiapan' => 'persiapan',
                                             default => 'secondary',
                                         };
+                                        $statusStyle = match ($pesanan->status) {
+                                            'persiapan' => 'background-color:#E83E8C; color:#fff;',
+                                            'dikirim'   => 'background-color:#007BFF; color:#fff;',
+                                            default     => '',
+                                        };
                                     @endphp
-                                    <span class="badge bg-{{ $statusColor }}">
+                                    <span class="badge {{ $statusStyle ? '' : 'bg-' . $statusColor }}"
+                                          style="{{ $statusStyle }}">
                                         {{ ucfirst(str_replace('_', ' ', $pesanan->status)) }}
                                     </span>
                                 </p>
@@ -102,6 +109,23 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        {{-- Catatan Persiapan: hanya tampil saat status 'persiapan' --}}
+                        @if($pesanan->status === 'persiapan')
+                            <div class="alert mb-0 mt-3 d-flex align-items-start gap-2"
+                                 style="background-color:#FFF8E1; border:1px solid #FFD54F; border-radius:10px;">
+                                <i class="bi bi-info-circle-fill mt-1" style="color:#F59E0B; font-size:1.1rem; flex-shrink:0;"></i>
+                                <div>
+                                    <strong style="color:#92400E;">Informasi Pesanan</strong><br>
+                                    <span style="color:#78350F; font-size:0.875rem;">
+                                        Pesanan Anda sedang dalam proses persiapan. Apabila melewati
+                                        <strong>7 hari</strong> dan belum ada pengiriman, silakan hubungi kami melalui
+                                        <strong>WhatsApp</strong> yang tersedia di pojok kanan bawah halaman ini.
+                                    </span>
+                                </div>
+                            </div>
+                        @endif
+
                     </div>
                 </div>
             </div>

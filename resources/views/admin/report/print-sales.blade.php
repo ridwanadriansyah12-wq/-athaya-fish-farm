@@ -232,7 +232,7 @@
 
     {{-- ── TOMBOL AKSI (tidak ikut cetak) ── --}}
     <div class="no-print">
-        <a href="{{ route('admin.report.sales', request()->only(['start_date','end_date'])) }}" class="btn-back">
+        <a href="{{ route('admin.report.sales', request()->all()) }}" class="btn-back">
             ← Kembali
         </a>
         <button class="btn-print" onclick="window.print()">
@@ -249,7 +249,19 @@
         </div>
         <div class="report-meta">
             <strong>LAPORAN PENJUALAN</strong>
-            @if(request('start_date') || request('end_date'))
+            @if(($filterType ?? 'harian') === 'bulanan')
+                @php
+                    $months = [
+                        '01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => 'April',
+                        '05' => 'Mei', '06' => 'Juni', '07' => 'Juli', '08' => 'Agustus',
+                        '09' => 'September', '10' => 'Oktober', '11' => 'November', '12' => 'Desember'
+                    ];
+                    $monthName = $months[$selectedMonth ?? ''] ?? '';
+                @endphp
+                Periode: Bulan {{ $monthName }} {{ $selectedYear ?? '' }}
+            @elseif(($filterType ?? 'harian') === 'tahunan')
+                Periode: Tahun {{ $selectedYear ?? '' }}
+            @elseif(request('start_date') || request('end_date'))
                 Periode: {{ request('start_date') ? \Carbon\Carbon::parse(request('start_date'))->translatedFormat('d M Y') : 'Awal' }}
                 – {{ request('end_date') ? \Carbon\Carbon::parse(request('end_date'))->translatedFormat('d M Y') : 'Sekarang' }}
             @else
@@ -260,12 +272,28 @@
     </div>
 
     {{-- ── INFO FILTER AKTIF ── --}}
-    @if(request('start_date') || request('end_date'))
-    <div class="filter-info">
-        🔍 Filter aktif —
-        @if(request('start_date')) Dari: <span>{{ \Carbon\Carbon::parse(request('start_date'))->translatedFormat('d M Y') }}</span> @endif
-        @if(request('end_date')) Sampai: <span>{{ \Carbon\Carbon::parse(request('end_date'))->translatedFormat('d M Y') }}</span> @endif
-    </div>
+    @if(($filterType ?? 'harian') === 'bulanan')
+        @php
+            $months = [
+                '01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => 'April',
+                '05' => 'Mei', '06' => 'Juni', '07' => 'Juli', '08' => 'Agustus',
+                '09' => 'September', '10' => 'Oktober', '11' => 'November', '12' => 'Desember'
+            ];
+            $monthName = $months[$selectedMonth ?? ''] ?? '';
+        @endphp
+        <div class="filter-info">
+            🔍 Filter aktif — Bulan: <span>{{ $monthName }} {{ $selectedYear ?? '' }}</span>
+        </div>
+    @elseif(($filterType ?? 'harian') === 'tahunan')
+        <div class="filter-info">
+            🔍 Filter aktif — Tahun: <span>{{ $selectedYear ?? '' }}</span>
+        </div>
+    @elseif(request('start_date') || request('end_date'))
+        <div class="filter-info">
+            🔍 Filter aktif —
+            @if(request('start_date')) Dari: <span>{{ \Carbon\Carbon::parse(request('start_date'))->translatedFormat('d M Y') }}</span> @endif
+            @if(request('end_date')) Sampai: <span>{{ \Carbon\Carbon::parse(request('end_date'))->translatedFormat('d M Y') }}</span> @endif
+        </div>
     @endif
 
     {{-- ── STATISTIK RINGKASAN ── --}}

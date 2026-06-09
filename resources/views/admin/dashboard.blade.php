@@ -88,15 +88,6 @@
                             'bg' => '#D1FAE5',
                             'badge' => null,
                         ],
-                        [
-                            'href' => route('admin.report.sales'),
-                            'icon' => 'bi-graph-up-arrow',
-                            'label' => 'Laporan Penjualan',
-                            'desc' => 'Analisis & statistik',
-                            'color' => '#7C3AED',
-                            'bg' => '#EDE9FE',
-                            'badge' => null,
-                        ],
                     ];
                 @endphp
                 <div class="row g-3">

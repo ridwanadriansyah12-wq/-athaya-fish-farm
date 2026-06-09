@@ -68,6 +68,8 @@
                                         id="password"
                                         name="password"
                                         placeholder="Minimal 8 karakter"
+                                        pattern="(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#])[a-zA-Z0-9!@#]{8,}"
+                                        title="Minimal 8 karakter, terdiri dari angka, huruf, dan simbol (!, @, #)"
                                         required
                                         style="border-radius:10px 0 0 10px;padding:.65rem 1rem;"
                                     >
@@ -77,6 +79,7 @@
                                         <i class="bi bi-eye" id="eye1"></i>
                                     </button>
                                 </div>
+                                <small class="text-muted">Minimal 8 karakter (harus terdiri dari angka, huruf, dan simbol !, @, #)</small>
                                 @error('password')
                                     <div class="text-danger mt-1" style="font-size:.82rem;">{{ $message }}</div>
                                 @enderror

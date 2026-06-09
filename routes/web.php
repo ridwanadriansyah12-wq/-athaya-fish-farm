@@ -122,7 +122,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/budidaya', [AdminController::class, 'indexBudidaya'])->name('budidaya.index');
     Route::patch('/budidaya/{penawaranBudidaya}/status', [AdminController::class, 'updateStatusBudidaya'])->name('budidaya.status');
 
-    // Reports
+    // Reports — hanya pemilik yang bisa akses (dicek di controller)
     Route::get('/reports/sales', [AdminController::class, 'salesReport'])->name('report.sales');
     Route::get('/reports/sales/print', [AdminController::class, 'printSalesReport'])->name('report.sales.print');
     Route::get('/reports/financial', [AdminController::class, 'financialReport'])->name('report.financial');

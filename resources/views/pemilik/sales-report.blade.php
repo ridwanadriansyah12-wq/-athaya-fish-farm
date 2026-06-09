@@ -15,7 +15,7 @@
             <small class="text-muted">Ringkasan data penjualan</small>
         </div>
         <div class="col-auto d-flex align-items-center gap-2">
-            <a href="{{ route('pemilik.sales-report.print', request()->only(['start_date','end_date'])) }}"
+            <a href="{{ route('pemilik.sales-report.print', request()->all()) }}"
                target="_blank"
                class="btn btn-dark btn-sm"
                id="btn-cetak-laporan-pemilik"
@@ -29,20 +29,59 @@
     </div>
 
     {{-- Filter --}}
-    <div class="card mb-4">
+    <div class="card mb-4 shadow-sm border-0">
         <div class="card-body">
             <form method="GET" action="{{ route('pemilik.sales-report') }}" class="row g-3">
-                <div class="col-md-4">
-                    <label for="start_date" class="form-label">Dari Tanggal</label>
+                <div class="col-md-3">
+                    <label for="filter_type" class="form-label fw-semibold">Tipe Laporan</label>
+                    <select class="form-select" id="filter_type" name="filter_type" onchange="toggleFilterFields()">
+                        <option value="harian" {{ ($filterType ?? 'harian') == 'harian' ? 'selected' : '' }}>Harian (Rentang Tanggal)</option>
+                        <option value="bulanan" {{ ($filterType ?? 'harian') == 'bulanan' ? 'selected' : '' }}>Per Bulan</option>
+                        <option value="tahunan" {{ ($filterType ?? 'harian') == 'tahunan' ? 'selected' : '' }}>Per Tahun</option>
+                    </select>
+                </div>
+
+                {{-- Fields untuk Harian --}}
+                <div class="col-md-3 filter-field filter-harian">
+                    <label for="start_date" class="form-label fw-semibold">Dari Tanggal</label>
                     <input type="date" class="form-control" id="start_date" name="start_date"
                            value="{{ request('start_date') }}">
                 </div>
-                <div class="col-md-4">
-                    <label for="end_date" class="form-label">Sampai Tanggal</label>
+                <div class="col-md-3 filter-field filter-harian">
+                    <label for="end_date" class="form-label fw-semibold">Sampai Tanggal</label>
                     <input type="date" class="form-control" id="end_date" name="end_date"
                            value="{{ request('end_date') }}">
                 </div>
-                <div class="col-md-4 d-flex align-items-end gap-2">
+
+                {{-- Fields untuk Bulanan --}}
+                <div class="col-md-3 filter-field filter-bulanan" style="display: none;">
+                    <label for="month" class="form-label fw-semibold">Pilih Bulan</label>
+                    <select class="form-select" id="month" name="month">
+                        @php
+                            $months = [
+                                '01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => 'April',
+                                '05' => 'Mei', '06' => 'Juni', '07' => 'Juli', '08' => 'Agustus',
+                                '09' => 'September', '10' => 'Oktober', '11' => 'November', '12' => 'Desember'
+                            ];
+                            $currentMonth = $selectedMonth ?? date('m');
+                        @endphp
+                        @foreach($months as $num => $name)
+                            <option value="{{ $num }}" {{ $currentMonth == $num ? 'selected' : '' }}>{{ $name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                {{-- Fields untuk Tahunan dan Bulanan --}}
+                <div class="col-md-3 filter-field filter-tahun-select" style="display: none;">
+                    <label for="year" class="form-label fw-semibold">Pilih Tahun</label>
+                    <select class="form-select" id="year" name="year">
+                        @foreach($availableYears ?? [date('Y')] as $yr)
+                            <option value="{{ $yr }}" {{ ($selectedYear ?? date('Y')) == $yr ? 'selected' : '' }}>{{ $yr }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-3 d-flex align-items-end gap-2 ms-auto">
                     <button type="submit" class="btn btn-primary w-100">
                         <i class="bi bi-funnel me-1"></i> Filter
                     </button>
@@ -98,37 +137,36 @@
             <table class="table table-hover mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th class="px-4">ID</th>
+                        <th class="px-4">No. Pesanan</th>
                         <th>Pelanggan</th>
-                        <th>Tanggal</th>
-                        <th>Total Pendapatan</th>
+                        <th>Tanggal Lunas</th>
+                        <th>Total Pembayaran</th>
                         <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($sales as $sale)
                     <tr>
-                        <td class="px-4">#{{ $sale->id }}</td>
-                        <td>{{ $sale->user->name ?? 'Anonim' }}</td>
-                        <td>
-                            <small class="text-muted">
-                                {{ $sale->Tanggal_Penjualan ? $sale->Tanggal_Penjualan->format('d M Y H:i') : '-' }}
-                            </small>
+                        <td class="px-4">
+                            <span class="fw-semibold text-primary">{{ $sale->nomor_pesanan }}</span>
                         </td>
                         <td>
-                            <span class="fw-bold">Rp {{ number_format($sale->Total_Pendapatan, 0, ',', '.') }}</span>
+                            <div class="fw-semibold">{{ $sale->customer->name ?? 'Anonim' }}</div>
+                            <small class="text-muted">{{ $sale->customer->email ?? '-' }}</small>
                         </td>
                         <td>
-                            @php $status = strtolower($sale->Status ?? $sale->status ?? '') @endphp
-                            @if($status == 'selesai')
-                                <span class="badge bg-success">Selesai</span>
-                            @elseif($status == 'pending')
-                                <span class="badge bg-warning text-dark">Pending</span>
-                            @elseif($status == 'batal' || $status == 'cancelled')
-                                <span class="badge bg-danger">Batal</span>
+                            @if($sale->pembayaran_at)
+                                <div>{{ $sale->pembayaran_at->format('d M Y') }}</div>
+                                <small class="text-muted">{{ $sale->pembayaran_at->format('H:i') }} WIB</small>
                             @else
-                                <span class="badge bg-secondary">{{ ucfirst($status) }}</span>
+                                <span class="text-muted">-</span>
                             @endif
+                        </td>
+                        <td>
+                            <span class="fw-bold text-success">Rp {{ number_format($sale->total_pembayaran, 0, ',', '.') }}</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-success">Lunas</span>
                         </td>
                     </tr>
                     @empty
@@ -151,3 +189,33 @@
 
 </div>
 @endsection
+
+@push('scripts')
+<script>
+function toggleFilterFields() {
+    const filterType = document.getElementById('filter_type').value;
+    const harianFields = document.querySelectorAll('.filter-harian');
+    const bulananFields = document.querySelectorAll('.filter-bulanan');
+    const tahunFields = document.querySelectorAll('.filter-tahun-select');
+
+    if (filterType === 'harian') {
+        harianFields.forEach(el => el.style.display = 'block');
+        bulananFields.forEach(el => el.style.display = 'none');
+        tahunFields.forEach(el => el.style.display = 'none');
+    } else if (filterType === 'bulanan') {
+        harianFields.forEach(el => el.style.display = 'none');
+        bulananFields.forEach(el => el.style.display = 'block');
+        tahunFields.forEach(el => el.style.display = 'block');
+    } else if (filterType === 'tahunan') {
+        harianFields.forEach(el => el.style.display = 'none');
+        bulananFields.forEach(el => el.style.display = 'none');
+        tahunFields.forEach(el => el.style.display = 'block');
+    }
+}
+
+// Run on page load to initialize correct state
+document.addEventListener('DOMContentLoaded', function() {
+    toggleFilterFields();
+});
+</script>
+@endpush

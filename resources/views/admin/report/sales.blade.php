@@ -10,7 +10,7 @@
         <h2><i class="bi bi-bar-chart-line"></i> Laporan Penjualan</h2>
         <div class="d-flex align-items-center gap-2">
             <span class="badge bg-success fs-6">{{ $totalSales }} Transaksi Lunas</span>
-            <a href="{{ route('admin.report.sales.print', request()->only(['start_date','end_date'])) }}"
+            <a href="{{ route('admin.report.sales.print', request()->all()) }}"
                target="_blank"
                class="btn btn-dark btn-sm"
                title="Cetak Laporan sebagai dokumen print-friendly"
@@ -24,28 +24,63 @@
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-body">
             <form method="GET" action="{{ route('admin.report.sales') }}" class="row g-3 align-items-end">
-                <div class="col-md-4">
+                <div class="col-md-3">
+                    <label for="filter_type" class="form-label fw-semibold">Tipe Laporan</label>
+                    <select class="form-select" id="filter_type" name="filter_type" onchange="toggleFilterFields()">
+                        <option value="harian" {{ ($filterType ?? 'harian') == 'harian' ? 'selected' : '' }}>Harian (Rentang Tanggal)</option>
+                        <option value="bulanan" {{ ($filterType ?? 'harian') == 'bulanan' ? 'selected' : '' }}>Per Bulan</option>
+                        <option value="tahunan" {{ ($filterType ?? 'harian') == 'tahunan' ? 'selected' : '' }}>Per Tahun</option>
+                    </select>
+                </div>
+
+                {{-- Fields untuk Harian --}}
+                <div class="col-md-3 filter-field filter-harian">
                     <label for="start_date" class="form-label fw-semibold">Dari Tanggal</label>
                     <input type="date" class="form-control" id="start_date" name="start_date"
                            value="{{ request('start_date') }}">
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3 filter-field filter-harian">
                     <label for="end_date" class="form-label fw-semibold">Sampai Tanggal</label>
                     <input type="date" class="form-control" id="end_date" name="end_date"
                            value="{{ request('end_date') }}">
                 </div>
-                <div class="col-md-2">
+
+                {{-- Fields untuk Bulanan --}}
+                <div class="col-md-3 filter-field filter-bulanan" style="display: none;">
+                    <label for="month" class="form-label fw-semibold">Pilih Bulan</label>
+                    <select class="form-select" id="month" name="month">
+                        @php
+                            $months = [
+                                '01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => 'April',
+                                '05' => 'Mei', '06' => 'Juni', '07' => 'Juli', '08' => 'Agustus',
+                                '09' => 'September', '10' => 'Oktober', '11' => 'November', '12' => 'Desember'
+                            ];
+                            $currentMonth = $selectedMonth ?? date('m');
+                        @endphp
+                        @foreach($months as $num => $name)
+                            <option value="{{ $num }}" {{ $currentMonth == $num ? 'selected' : '' }}>{{ $name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                {{-- Fields untuk Tahunan dan Bulanan --}}
+                <div class="col-md-3 filter-field filter-tahun-select" style="display: none;">
+                    <label for="year" class="form-label fw-semibold">Pilih Tahun</label>
+                    <select class="form-select" id="year" name="year">
+                        @foreach($availableYears ?? [date('Y')] as $yr)
+                            <option value="{{ $yr }}" {{ ($selectedYear ?? date('Y')) == $yr ? 'selected' : '' }}>{{ $yr }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-3 d-flex align-items-end gap-2 ms-auto">
                     <button type="submit" class="btn btn-primary w-100">
                         <i class="bi bi-funnel"></i> Filter
                     </button>
-                </div>
-                @if(request('start_date') || request('end_date'))
-                <div class="col-md-2">
                     <a href="{{ route('admin.report.sales') }}" class="btn btn-outline-secondary w-100">
                         <i class="bi bi-x-circle"></i> Reset
                     </a>
                 </div>
-                @endif
             </form>
         </div>
     </div>
@@ -226,3 +261,33 @@
 
 </div>
 @endsection
+
+@push('scripts')
+<script>
+function toggleFilterFields() {
+    const filterType = document.getElementById('filter_type').value;
+    const harianFields = document.querySelectorAll('.filter-harian');
+    const bulananFields = document.querySelectorAll('.filter-bulanan');
+    const tahunFields = document.querySelectorAll('.filter-tahun-select');
+
+    if (filterType === 'harian') {
+        harianFields.forEach(el => el.style.display = 'block');
+        bulananFields.forEach(el => el.style.display = 'none');
+        tahunFields.forEach(el => el.style.display = 'none');
+    } else if (filterType === 'bulanan') {
+        harianFields.forEach(el => el.style.display = 'none');
+        bulananFields.forEach(el => el.style.display = 'block');
+        tahunFields.forEach(el => el.style.display = 'block');
+    } else if (filterType === 'tahunan') {
+        harianFields.forEach(el => el.style.display = 'none');
+        bulananFields.forEach(el => el.style.display = 'none');
+        tahunFields.forEach(el => el.style.display = 'block');
+    }
+}
+
+// Run on page load to initialize correct state
+document.addEventListener('DOMContentLoaded', function() {
+    toggleFilterFields();
+});
+</script>
+@endpush

@@ -32,13 +32,22 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'nomor_telepon' => 'required|string|max:15',
-            'alamat' => 'required|string|max:500',
-            'password' => 'required|string|min:8|confirmed'
+            'nomor_telepon' => 'required|regex:/^[0-9]+$/|max:15',
+            'alamat' => 'required|string|min:30|max:500',
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+                'regex:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#])[a-zA-Z0-9!@#]+$/'
+            ]
         ], [
             'email.unique' => 'Email sudah terdaftar',
             'password.confirmed' => 'Konfirmasi password tidak cocok',
-            'password.min' => 'Password minimal 8 karakter'
+            'password.min' => 'Password minimal 8 karakter',
+            'password.regex' => 'Password harus mengandung kombinasi huruf, angka, dan karakter spesial (!, @, #), serta hanya boleh terdiri dari karakter tersebut.',
+            'nomor_telepon.regex' => 'Nomor telepon harus berupa angka dan tidak boleh mengandung huruf.',
+            'alamat.min' => 'Alamat minimal harus terdiri dari 30 karakter.'
         ]);
 
         if ($validator->fails()) {
@@ -123,9 +132,12 @@ class AuthController extends Controller
         
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'nomor_telepon' => 'required|string|max:15',
-            'alamat' => 'required|string|max:500',
+            'nomor_telepon' => 'required|regex:/^[0-9]+$/|max:15',
+            'alamat' => 'required|string|min:30|max:500',
             'foto_profil' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ], [
+            'nomor_telepon.regex' => 'Nomor telepon harus berupa angka dan tidak boleh mengandung huruf.',
+            'alamat.min' => 'Alamat minimal harus terdiri dari 30 karakter.'
         ]);
 
         if ($validator->fails()) {

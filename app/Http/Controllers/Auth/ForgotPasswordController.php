@@ -77,11 +77,18 @@ class ForgotPasswordController extends Controller
         }
 
         $request->validate([
-            'password'              => 'required|min:8|confirmed',
+            'password'              => [
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+                'regex:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#])[a-zA-Z0-9!@#]+$/'
+            ],
             'password_confirmation' => 'required',
         ], [
             'password.min'               => 'Password minimal 8 karakter.',
             'password.confirmed'         => 'Konfirmasi password tidak cocok.',
+            'password.regex'             => 'Password harus mengandung kombinasi huruf, angka, dan karakter spesial (!, @, #), serta hanya boleh terdiri dari karakter tersebut.',
             'password_confirmation.required' => 'Konfirmasi password wajib diisi.',
         ]);
 
