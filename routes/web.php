@@ -104,10 +104,6 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::patch('/order/{order}/status', [AdminController::class, 'updateOrderStatus'])->name('order.status');
     Route::delete('/order/{order}', [AdminController::class, 'destroyOrder'])->name('order.destroy');
 
-    // Pre-Order Management
-    Route::get('/pre-order', [AdminController::class, 'indexPreOrder'])->name('pre-order.index');
-    Route::get('/pre-order/{preOrder}', [AdminController::class, 'showPreOrder'])->name('pre-order.show');
-    Route::patch('/pre-order/{preOrder}/status', [AdminController::class, 'updatePreOrderStatus'])->name('pre-order.status');
 
     // User Management
     Route::get('/user', [AdminController::class, 'indexUser'])->name('user.index');
@@ -125,7 +121,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     // Reports — hanya pemilik yang bisa akses (dicek di controller)
     Route::get('/reports/sales', [AdminController::class, 'salesReport'])->name('report.sales');
     Route::get('/reports/sales/print', [AdminController::class, 'printSalesReport'])->name('report.sales.print');
-    Route::get('/reports/financial', [AdminController::class, 'financialReport'])->name('report.financial');
+
 });
 
 // ─── PEMILIK ROUTES ───────────────────────────────────────────────────────────

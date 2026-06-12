@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Pesanan;
-use App\Models\Penjualan;
+
 use App\Models\KatalogIkan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;

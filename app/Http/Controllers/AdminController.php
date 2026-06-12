@@ -5,9 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\KatalogIkan;
 use App\Models\Pesanan;
-use App\Models\PreOrder;
-use App\Models\Penjualan;
-use App\Models\LaporanKeuangan;
 use App\Models\PenawaranBudidaya;
 use Illuminate\Http\Request;
 
@@ -239,42 +236,6 @@ class AdminController extends Controller
         return redirect()->route('admin.order.index')->with('success', 'Pesanan berhasil dihapus');
     }
 
-    // ===== PRE-ORDER MANAGEMENT =====
-
-    /**
-     * Display list of pre-orders
-     */
-    public function indexPreOrder()
-    {
-        $preOrders = PreOrder::with('user', 'detailPreOrder')
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
-
-        return view('admin.pre-order.index', ['preOrders' => $preOrders]);
-    }
-
-    /**
-     * Show pre-order detail
-     */
-    public function showPreOrder(PreOrder $preOrder)
-    {
-        $preOrder->load('user', 'detailPreOrder');
-        return view('admin.pre-order.show', ['preOrder' => $preOrder]);
-    }
-
-    /**
-     * Update pre-order status
-     */
-    public function updatePreOrderStatus(Request $request, PreOrder $preOrder)
-    {
-        $validated = $request->validate([
-            'Status' => 'required|in:pending,confirmed,ready,completed,cancelled',
-        ]);
-
-        $preOrder->update($validated);
-        return redirect()->back()->with('success', 'Status pre-order berhasil diperbarui');
-    }
-
     // ===== USER MANAGEMENT =====
 
     /**
@@ -319,7 +280,7 @@ class AdminController extends Controller
      */
     public function showUser(User $user)
     {
-        $user->load('pemesanan', 'preOrder', 'penjualan');
+        $user->load('pesanan', 'penawaranBudidaya');
         return view('admin.user.show', ['user' => $user]);
     }
 
@@ -497,17 +458,7 @@ class AdminController extends Controller
         ]);
     }
 
-    /**
-     * Display financial report
-     */
-    public function financialReport()
-    {
-        // Hanya pemilik yang bisa akses laporan keuangan
-        abort_unless(auth()->user()->isPemilik(), 403, 'Fitur ini hanya tersedia untuk Pemilik.');
-        $reports = LaporanKeuangan::orderBy('Periode', 'desc')->paginate(15);
 
-        return view('admin.report.financial', ['reports' => $reports]);
-    }
 
 
     // ===== BUDIDAYA MANAGEMENT =====

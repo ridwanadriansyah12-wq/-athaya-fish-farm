@@ -96,23 +96,8 @@ class User extends Authenticatable implements CanResetPasswordContract
         return $this->hasMany(Pesanan::class, 'customer_id');
     }
 
-    public function keranjang()
+    public function penawaranBudidaya()
     {
-        return $this->hasMany(Keranjang::class, 'id_user');
-    }
-
-    public function penjualan()
-    {
-        return $this->hasMany(Penjualan::class, 'ID_User');
-    }
-
-    public function pemesanan()
-    {
-        return $this->hasMany(Pemesanan::class, 'User_ID');
-    }
-
-    public function preOrder()
-    {
-        return $this->hasMany(PreOrder::class, 'ID_User');
+        return $this->hasMany(PenawaranBudidaya::class);
     }
 }
