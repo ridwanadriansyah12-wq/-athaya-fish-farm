@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -95,8 +95,8 @@
             color: #6B7280;
             margin-top: 16px;
             padding: 12px 16px;
-            background: #FFF8E1;
-            border-left: 3px solid #F59E0B;
+            background: #F0F9FF;
+            border-left: 3px solid #38BDF8;
             border-radius: 6px;
         }
         .footer {

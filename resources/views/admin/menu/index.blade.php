@@ -69,8 +69,8 @@
                                         class="form-check-input row-checkbox" onchange="updatePilihan()">
                                 </td>
                                 <td>
-                                    @if($item->gambar)
-                                        <img src="{{ asset('storage/' . $item->gambar) }}" alt="{{ $item->nama_produk }}"
+                                    @if($item->first_image)
+                                        <img src="{{ asset('storage/' . $item->first_image) }}" alt="{{ $item->nama_produk }}"
                                             class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
                                     @else
                                         <div class="bg-light d-flex align-items-center justify-content-center text-secondary border rounded"

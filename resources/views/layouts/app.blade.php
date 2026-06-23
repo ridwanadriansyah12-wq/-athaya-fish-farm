@@ -18,14 +18,14 @@
 
     <style>
         /* ===================================================================
-           CSS VARIABLES — Luxury Aquaculture Dark & Gold Theme
+           CSS VARIABLES — Luxury Aquaculture Dark & Sky Blue Theme
         =================================================================== */
         :root {
             /* Core palette */
             --dark-primary:   #0D1117;   /* Hero / page bg */
             --dark-surface:   #161B22;   /* Card on dark / Navbar */
-            --gold:           #F5A623;   /* CTA, highlight, badge */
-            --gold-hover:     #D4890F;   /* Hover state */
+            --gold:           #0EA5E9;   /* CTA, highlight, badge */
+            --gold-hover:     #0284C7;   /* Hover state */
             --text-light:     #F0F6FC;   /* Heading on dark */
             --text-muted-dark:#8B949E;   /* Subtext on dark */
             --white-surface:  #FFFFFF;
@@ -36,9 +36,9 @@
             --text-gray:      #6B7280;   /* Body on light */
 
             /* Legacy compat vars still used in some sections */
-            --primary:        #F5A623;
-            --primary-light:  #FEF3C7;
-            --primary-pale:   #FFFBEB;
+            --primary:        #0EA5E9;
+            --primary-light:  #E0F2FE;
+            --primary-pale:   #F0F9FF;
             --primary-dark:   #0D1117;
             --text-muted:     #6B7280;
             --bg-body:        #F8F9FA;
@@ -147,7 +147,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            background: var(--gold);
+            background: var(--primary);
             border-radius: 99px;
             padding: 5px 14px 5px 5px;
             cursor: pointer;
@@ -172,7 +172,7 @@
             font-size: 0.75rem;
         }
         .user-name {
-            color: #111827;
+            color: #ffffff;
             font-weight: 700;
             font-size: 0.82rem;
         }
@@ -205,8 +205,8 @@
 
         /* Guest nav buttons */
         .nav-btn-register {
-            background: var(--gold);
-            color: #111827 !important;
+            background: var(--primary);
+            color: #ffffff !important;
             border-radius: 99px;
             padding: 0.35rem 1rem !important;
             font-weight: 600 !important;
@@ -215,7 +215,7 @@
         }
         .nav-btn-register:hover {
             background: var(--gold-hover) !important;
-            color: #111827 !important;
+            color: #ffffff !important;
         }
 
         /* ===================================================================
@@ -232,27 +232,27 @@
             gap: 6px;
         }
         .btn-primary {
-            background: var(--gold);
+            background: var(--primary);
             border: none;
-            color: #111827;
+            color: #ffffff;
             font-weight: 700;
-            box-shadow: 0 2px 8px rgba(245,166,35,0.25);
+            box-shadow: 0 2px 8px rgba(14,165,233,0.25);
         }
         .btn-primary:hover {
-            background: var(--gold-hover);
-            color: #111827;
+            background: #0284c7;
+            color: #ffffff;
             transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(245,166,35,0.35);
+            box-shadow: 0 4px 16px rgba(14,165,233,0.40);
         }
         .btn-outline-primary {
-            color: var(--gold);
-            border: 1.5px solid var(--gold);
+            color: var(--primary);
+            border: 1.5px solid var(--primary);
             background: transparent;
         }
         .btn-outline-primary:hover {
-            background: var(--gold);
-            border-color: var(--gold);
-            color: #111827;
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #ffffff;
             transform: translateY(-1px);
         }
         .btn-outline-secondary {
@@ -280,7 +280,7 @@
         .card:hover {
             transform: translateY(-4px);
             box-shadow: var(--shadow-md);
-            border-color: rgba(245,166,35,0.4);
+            border-color: rgba(14,165,233,0.4);
         }
         .card-header {
             background: #fff;
@@ -342,8 +342,8 @@
         }
         .form-control:focus,
         .form-select:focus {
-            border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(245,166,35,0.15);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(14,165,233,0.15);
             outline: none;
         }
         .form-control.is-invalid { border-color: #EF4444; }
@@ -395,8 +395,8 @@
         }
         .alert-success { background: #ECFDF5; color: #065F46; border-left: 4px solid #10B981; }
         .alert-danger  { background: #FEF2F2; color: #991B1B; border-left: 4px solid #EF4444; }
-        .alert-info    { background: var(--primary-pale); color: #7B5A00; border-left: 4px solid var(--gold); }
-        .alert-warning { background: #FFFBEB; color: #92400E; border-left: 4px solid #F59E0B; }
+        .alert-info    { background: var(--primary-pale); color: #0C4A6E; border-left: 4px solid var(--primary); }
+        .alert-warning { background: #F0F9FF; color: #0C4A6E; border-left: 4px solid #38BDF8; }
 
         /* ===================================================================
            PAGE HEADER (dashboard inner pages)
@@ -427,7 +427,7 @@
         }
         .footer p { margin: 0.2rem 0; }
         .footer a  { color: var(--text-muted-dark); text-decoration: none; transition: color 200ms ease; }
-        .footer a:hover { color: var(--gold); }
+        .footer a:hover { color: var(--primary); }
         .footer strong { color: var(--text-light); }
 
         /* ===================================================================
@@ -456,25 +456,25 @@
         .pagination .page-link {
             border-radius: 8px !important;
             margin: 0 2px;
-            color: var(--gold);
+            color: var(--primary);
             border-color: var(--border-color);
             font-weight: 500; font-size: 0.85rem;
         }
         .pagination .page-item.active .page-link {
-            background: var(--gold);
-            border-color: var(--gold);
-            color: #111827;
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #ffffff;
         }
         .pagination .page-link:hover {
             background: var(--primary-pale);
-            border-color: var(--gold);
-            color: var(--gold);
+            border-color: var(--primary);
+            color: var(--primary);
         }
 
         /* ===================================================================
            UTILITIES
         =================================================================== */
-        .text-primary       { color: var(--gold) !important; }
+        .text-primary       { color: var(--primary) !important; }
         .text-primary-dark  { color: var(--dark-primary) !important; }
         .bg-primary-pale    { background: var(--primary-pale) !important; }
         .font-playfair      { font-family: 'Playfair Display', Georgia, serif; }
@@ -533,19 +533,19 @@
         .swal-admin .swal2-footer { border-top: 1px solid #BBDEFB !important; color: #546E7A !important; font-size: 0.8rem !important; }
         .swal-admin.swal2-toast { border-left: 4px solid #1565C0 !important; border-radius: 10px !important; background: #E3F0FD !important; color: #0D47A1 !important; box-shadow: 0 6px 24px rgba(21,101,192,.15) !important; }
 
-        /* -- PEMILIK: Emas premium -- */
+        /* -- PEMILIK: Biru langit premium -- */
         .swal-pemilik.swal2-popup {
-            border-top: 4px solid #B8860B !important;
+            border-top: 4px solid #0284C7 !important;
             border-radius: 18px !important;
-            box-shadow: 0 20px 60px rgba(184,134,11,.18) !important;
-            background: #FFFDF7 !important;
+            box-shadow: 0 20px 60px rgba(2,132,199,.18) !important;
+            background: #F0F9FF !important;
             padding: 2rem 1.75rem 1.5rem !important;
         }
-        .swal-pemilik .swal2-title  { color: #7B5A00 !important; font-weight: 800 !important; font-size: 1.25rem !important; }
-        .swal-pemilik .swal2-html-container { color: #5C4200 !important; font-size: 0.92rem !important; line-height: 1.6 !important; }
-        .swal-pemilik .swal2-timer-progress-bar { background: linear-gradient(90deg,#B8860B,#D4A017) !important; height: 3px !important; }
-        .swal-pemilik .swal2-footer { border-top: 1px solid #F0E6C0 !important; color: #9B7D3A !important; font-size: 0.8rem !important; }
-        .swal-pemilik.swal2-toast { border-left: 4px solid #B8860B !important; border-radius: 12px !important; background: #FFF8E1 !important; color: #7B5A00 !important; box-shadow: 0 6px 24px rgba(184,134,11,.15) !important; }
+        .swal-pemilik .swal2-title  { color: #0C4A6E !important; font-weight: 800 !important; font-size: 1.25rem !important; }
+        .swal-pemilik .swal2-html-container { color: #0369A1 !important; font-size: 0.92rem !important; line-height: 1.6 !important; }
+        .swal-pemilik .swal2-timer-progress-bar { background: linear-gradient(90deg,#0284C7,#0EA5E9) !important; height: 3px !important; }
+        .swal-pemilik .swal2-footer { border-top: 1px solid #BAE6FD !important; color: #0369A1 !important; font-size: 0.8rem !important; }
+        .swal-pemilik.swal2-toast { border-left: 4px solid #0284C7 !important; border-radius: 12px !important; background: #E0F2FE !important; color: #0C4A6E !important; box-shadow: 0 6px 24px rgba(2,132,199,.15) !important; }
 
         /* -- SweetAlert buttons -- */
         .swal2-confirm, .swal2-cancel {
@@ -797,11 +797,11 @@
             },
             pemilik: {
                 toastPosition: 'top-start',
-                confirmColor: '#B8860B',
+                confirmColor: '#0284C7',
                 cancelColor: '#6B5C3E',
                 deleteColor: '#8B0000',
                 customClass: { popup: 'swal-pemilik', confirmButton: 'swal-btn-pemilik' },
-                background: '#FFFDF7',
+                background: '#F0F9FF',
                 color: '#3B2800',
             },
             guest: {
@@ -879,7 +879,7 @@
                 const roleConfigs = {
                     customer: { title: 'Selamat Datang', confirmButtonText: 'Mulai Belanja', footer: '<small>Nikmati produk segar Athaya Fish Farm</small>', backdrop: 'rgba(74,144,164,0.15)' },
                     admin:    { title: 'Panel Admin', confirmButtonText: 'Ke Dashboard', footer: '<small>Sistem berjalan normal</small>', backdrop: 'rgba(21,101,192,0.12)' },
-                    pemilik:  { title: 'Selamat Datang, Pemilik', confirmButtonText: 'Lihat Laporan', footer: '<small>Pantau bisnis Anda hari ini</small>', backdrop: 'rgba(184,134,11,0.12)' },
+                    pemilik:  { title: 'Selamat Datang, Pemilik', confirmButtonText: 'Lihat Laporan', footer: '<small>Pantau bisnis Anda hari ini</small>', backdrop: 'rgba(2,132,199,0.12)' },
                     guest:    { title: 'Selamat Datang', confirmButtonText: 'OK', footer: '', backdrop: true },
                 };
                 const rc = roleConfigs[__ROLE__] || roleConfigs['guest'];

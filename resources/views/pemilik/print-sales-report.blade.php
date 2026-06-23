@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -97,7 +97,7 @@
         .stat-card.blue   .value { color: #1565C0; }
         .stat-card.green  .value { color: #1B8A4E; }
         .stat-card.teal   .value { color: #00838F; }
-        .stat-card.gold   .value { color: #B8860B; }
+        .stat-card.gold   .value { color: #0284C7; }
 
         /* ── TABLE ── */
         table {
@@ -141,7 +141,7 @@
         .text-success { color: #1B8A4E; font-weight: 700; }
         .text-muted   { color: #777; font-size: 10px; }
         .fw-bold      { font-weight: 700; }
-        .text-primary { color: #B8860B; font-weight: 600; }
+        .text-primary { color: #0284C7; font-weight: 600; }
 
         /* ── FOOTER TABLE ── */
         .table-footer { background: #101216; color: #fff; }

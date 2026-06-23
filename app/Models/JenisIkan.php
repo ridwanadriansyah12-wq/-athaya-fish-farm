@@ -17,4 +17,10 @@ class JenisIkan extends Model
     {
         return $this->hasMany(LaporanHarian::class, 'id_ikan', 'id');
     }
+
+    public function katalogIkan()
+    {
+        return $this->hasMany(KatalogIkan::class, 'jenis_ikan_id', 'id');
+    }
 }
+

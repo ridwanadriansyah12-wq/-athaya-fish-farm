@@ -78,21 +78,29 @@ class AdminController extends Controller
     public function storeMenu(Request $request)
     {
         $validated = $request->validate([
-            'jenis_ikan_id' => 'required|exists:jenis_ikan,id',
+            'jenis_ikan_name' => 'required|string|max:255',
             'nama_produk'   => 'required|string|max:255',
             'harga_satuan'  => 'required|numeric|min:0',
             'stok'          => 'required|integer|min:0',
             'berat_gram'    => 'nullable|integer|min:0',
             'deskripsi'     => 'nullable|string',
-            'gambar'        => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'gambar'        => 'nullable|array|max:5',
+            'gambar.*'      => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+        $namaJenis = ucwords(strtolower(trim($request->input('jenis_ikan_name'))));
+        $jenis = \App\Models\JenisIkan::firstOrCreate(['nama_jenis' => $namaJenis]);
+
+        $validated['jenis_ikan_id'] = $jenis->id;
         $validated['tersedia'] = $request->has('tersedia');
 
+        $paths = [];
         if ($request->hasFile('gambar')) {
-            $gambarPath = $request->file('gambar')->store('produk', 'public');
-            $validated['gambar'] = $gambarPath;
+            foreach ($request->file('gambar') as $file) {
+                $paths[] = $file->store('produk', 'public');
+            }
         }
+        $validated['gambar'] = $paths;
 
         KatalogIkan::create($validated);
         return redirect()->route('admin.menu.index')->with('success', 'Produk berhasil ditambahkan');
@@ -113,25 +121,46 @@ class AdminController extends Controller
     public function updateMenu(Request $request, KatalogIkan $menu)
     {
         $validated = $request->validate([
-            'jenis_ikan_id' => 'required|exists:jenis_ikan,id',
+            'jenis_ikan_name' => 'required|string|max:255',
             'nama_produk'   => 'required|string|max:255',
             'harga_satuan'  => 'required|numeric|min:0',
             'stok'          => 'required|integer|min:0',
             'berat_gram'    => 'nullable|integer|min:0',
             'deskripsi'     => 'nullable|string',
-            'gambar'        => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'gambar'        => 'nullable|array|max:5',
+            'gambar.*'      => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'deleted_images'  => 'nullable|array',
+            'deleted_images.*'=> 'string',
         ]);
 
+        $namaJenis = ucwords(strtolower(trim($request->input('jenis_ikan_name'))));
+        $jenis = \App\Models\JenisIkan::firstOrCreate(['nama_jenis' => $namaJenis]);
+
+        $validated['jenis_ikan_id'] = $jenis->id;
         $validated['tersedia'] = $request->has('tersedia');
 
-        if ($request->hasFile('gambar')) {
-            // Delete old image if exists
-            if ($menu->gambar && \Illuminate\Support\Facades\Storage::disk('public')->exists($menu->gambar)) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($menu->gambar);
+        $currentImages = $menu->gambar;
+
+        // Process deleted images
+        if ($request->filled('deleted_images')) {
+            foreach ($request->input('deleted_images') as $delImg) {
+                if (\Illuminate\Support\Facades\Storage::disk('public')->exists($delImg)) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($delImg);
+                }
+                $currentImages = array_filter($currentImages, function ($img) use ($delImg) {
+                    return $img !== $delImg;
+                });
             }
-            $gambarPath = $request->file('gambar')->store('produk', 'public');
-            $validated['gambar'] = $gambarPath;
         }
+
+        // Process newly uploaded images
+        if ($request->hasFile('gambar')) {
+            foreach ($request->file('gambar') as $file) {
+                $currentImages[] = $file->store('produk', 'public');
+            }
+        }
+
+        $validated['gambar'] = array_values($currentImages);
 
         $menu->update($validated);
         return redirect()->route('admin.menu.index')->with('success', 'Produk berhasil diperbarui');
@@ -142,8 +171,10 @@ class AdminController extends Controller
      */
     public function destroyMenu(KatalogIkan $menu)
     {
-        if ($menu->gambar && \Illuminate\Support\Facades\Storage::disk('public')->exists($menu->gambar)) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete($menu->gambar);
+        foreach ($menu->gambar as $img) {
+            if (\Illuminate\Support\Facades\Storage::disk('public')->exists($img)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($img);
+            }
         }
         $menu->delete();
         return redirect()->route('admin.menu.index')->with('success', 'Produk berhasil dihapus');
@@ -162,8 +193,10 @@ class AdminController extends Controller
         $produk = KatalogIkan::whereIn('id', $validated['ids'])->get();
 
         foreach ($produk as $item) {
-            if ($item->gambar && \Illuminate\Support\Facades\Storage::disk('public')->exists($item->gambar)) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($item->gambar);
+            foreach ($item->gambar as $img) {
+                if (\Illuminate\Support\Facades\Storage::disk('public')->exists($img)) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($img);
+                }
             }
         }
 
@@ -181,8 +214,10 @@ class AdminController extends Controller
         $produk = KatalogIkan::all();
 
         foreach ($produk as $item) {
-            if ($item->gambar && \Illuminate\Support\Facades\Storage::disk('public')->exists($item->gambar)) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($item->gambar);
+            foreach ($item->gambar as $img) {
+                if (\Illuminate\Support\Facades\Storage::disk('public')->exists($img)) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($img);
+                }
             }
             $item->delete();
         }

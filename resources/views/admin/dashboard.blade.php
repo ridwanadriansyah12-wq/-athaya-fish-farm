@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Dashboard Admin')
 
@@ -25,7 +25,7 @@
                     ['label' => 'Customers', 'val' => $statistik['total_customers'] ?? 0, 'icon' => 'bi-person-heart', 'grad' => 'linear-gradient(135deg,#87CEEB,#4A90A4)'],
                     ['label' => 'Total Pesanan', 'val' => $statistik['total_pesanan'] ?? 0, 'icon' => 'bi-bag-check-fill', 'grad' => 'linear-gradient(135deg,#5BA3C1,#2C5F72)'],
                     ['label' => 'Pesanan Selesai', 'val' => $statistik['pesanan_selesai'] ?? 0, 'icon' => 'bi-check-circle-fill', 'grad' => 'linear-gradient(135deg,#2C5F72,#1A3A47)'],
-                    ['label' => 'Pending', 'val' => $statistik['pesanan_pending'] ?? 0, 'icon' => 'bi-hourglass-split', 'grad' => 'linear-gradient(135deg,#F59E0B,#D97706)'],
+                    ['label' => 'Pending', 'val' => $statistik['pesanan_pending'] ?? 0, 'icon' => 'bi-hourglass-split', 'grad' => 'linear-gradient(135deg,#38BDF8,#0EA5E9)'],
                     ['label' => 'Total Produk', 'val' => $statistik['total_produk'] ?? 0, 'icon' => 'bi-box-seam-fill', 'grad' => 'linear-gradient(135deg,#4A90A4,#87CEEB)'],
                 ];
             @endphp
@@ -66,8 +66,8 @@
                             'icon' => 'bi-bag-check-fill',
                             'label' => 'Kelola Pesanan',
                             'desc' => 'Manajemen order customer',
-                            'color' => '#D97706',
-                            'bg' => '#FEF3C7',
+                            'color' => '#0EA5E9',
+                            'bg' => '#E0F2FE',
                             'badge' => ($statistik['pesanan_pending'] ?? 0) > 0 ? ($statistik['pesanan_pending']) . ' pending' : null,
                         ],
                         [
@@ -99,7 +99,7 @@
                                     {{-- Badge --}}
                                     @if($m['badge'])
                                         <span class="position-absolute top-0 end-0 m-2 badge rounded-pill"
-                                            style="background:#D97706;color:#fff;font-size:.68rem">
+                                            style="background:#0EA5E9;color:#fff;font-size:.68rem">
                                             {{ $m['badge'] }}
                                         </span>
                                     @endif

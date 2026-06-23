@@ -25,7 +25,7 @@ class KatalogController extends Controller
         }
 
         $katalog = $query->where('tersedia', true)->with('jenisIkan')->paginate(12);
-        $jenisIkan = JenisIkan::all();
+        $jenisIkan = JenisIkan::whereHas('katalogIkan')->orderBy('nama_jenis')->get();
 
         return view('katalog.index', compact('katalog', 'jenisIkan'));
     }

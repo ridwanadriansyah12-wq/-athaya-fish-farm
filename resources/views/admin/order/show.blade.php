@@ -109,8 +109,8 @@
                                 <tr>
                                     <td class="ps-4">
                                         <div class="d-flex align-items-center gap-3">
-                                            @if(optional($detail->katalogIkan)->gambar)
-                                                <img src="{{ asset('storage/' . $detail->katalogIkan->gambar) }}"
+                                            @if(optional($detail->katalogIkan)->first_image)
+                                                <img src="{{ asset('storage/' . $detail->katalogIkan->first_image) }}"
                                                      alt="{{ $detail->katalogIkan->nama_produk }}"
                                                      class="rounded" style="width:44px;height:44px;object-fit:cover">
                                             @else

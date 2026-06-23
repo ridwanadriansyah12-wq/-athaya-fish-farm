@@ -28,7 +28,7 @@
         font-size: 14px;
     }
     .search-form .btn-search {
-        background: #F5A623;
+        background: #0EA5E9;
         color: #111827;
         border: none;
         border-radius: 10px;
@@ -42,7 +42,7 @@
         gap: 6px;
         transition: background 200ms ease;
     }
-    .search-form .btn-search:hover { background: #D4890F; }
+    .search-form .btn-search:hover { background: #0284C7; }
 
     /* Catalog grid */
     .catalog-grid-section {
@@ -54,7 +54,7 @@
     .btn-catalog-detail {
         display: block;
         width: 100%;
-        background: #F5A623;
+        background: #0EA5E9;
         color: #111827;
         border: none;
         border-radius: 8px;
@@ -66,7 +66,7 @@
         text-align: center;
         transition: background 200ms ease;
     }
-    .btn-catalog-detail:hover { background: #D4890F; color: #111827; }
+    .btn-catalog-detail:hover { background: #0284C7; color: #111827; }
     .btn-catalog-disabled {
         display: block;
         width: 100%;
@@ -88,7 +88,7 @@
     <div class="katalog-header">
         <div class="container">
             <h1 class="katalog-title animate-in">
-                <i class="bi bi-shop me-2" style="color:#F5A623"></i>Katalog Ikan
+                <i class="bi bi-shop me-2" style="color:#0EA5E9"></i>Katalog Ikan
             </h1>
             <p class="katalog-subtitle animate-in" style="transition-delay:60ms">Temukan ikan segar pilihan terbaik dari kolam kami</p>
         </div>
@@ -132,8 +132,8 @@
                         <div class="col-md-6 col-lg-3">
                             <div class="product-card animate-in h-100 d-flex flex-column">
                                 <div class="product-image">
-                                    @if($produk->gambar)
-                                        <img src="{{ asset('storage/' . $produk->gambar) }}"
+                                    @if($produk->first_image)
+                                        <img src="{{ asset('storage/' . $produk->first_image) }}"
                                             alt="{{ $produk->nama_produk }}"
                                             class="product-img-inner">
                                     @else

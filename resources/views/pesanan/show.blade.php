@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Detail Pesanan - ' . $pesanan->nomor_pesanan)
 
@@ -113,10 +113,10 @@
                         {{-- Catatan Persiapan: hanya tampil saat status 'persiapan' --}}
                         @if($pesanan->status === 'persiapan')
                             <div class="alert mb-0 mt-3 d-flex align-items-start gap-2"
-                                 style="background-color:#FFF8E1; border:1px solid #FFD54F; border-radius:10px;">
-                                <i class="bi bi-info-circle-fill mt-1" style="color:#F59E0B; font-size:1.1rem; flex-shrink:0;"></i>
+                                 style="background-color:#F0F9FF; border:1px solid #FFD54F; border-radius:10px;">
+                                <i class="bi bi-info-circle-fill mt-1" style="color:#38BDF8; font-size:1.1rem; flex-shrink:0;"></i>
                                 <div>
-                                    <strong style="color:#92400E;">Informasi Pesanan</strong><br>
+                                    <strong style="color:#0C4A6E;">Informasi Pesanan</strong><br>
                                     <span style="color:#78350F; font-size:0.875rem;">
                                         Pesanan Anda sedang dalam proses persiapan. Apabila melewati
                                         <strong>7 hari</strong> dan belum ada pengiriman, silakan hubungi kami melalui

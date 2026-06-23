@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Buat Password Baru')
 
@@ -161,7 +161,7 @@
             const lvl = [
                 {w:'0%',   c:'#E5E7EB', l:'—'},
                 {w:'25%',  c:'#EF4444', l:'Lemah'},
-                {w:'50%',  c:'#F59E0B', l:'Cukup'},
+                {w:'50%',  c:'#38BDF8', l:'Cukup'},
                 {w:'75%',  c:'#3B82F6', l:'Kuat'},
                 {w:'100%', c:'#10B981', l:'Sangat Kuat'},
             ][v.length === 0 ? 0 : Math.min(score, 4)];

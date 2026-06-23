@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Daftar')
 
@@ -33,7 +33,7 @@
         color: #F0F6FC;
         margin-bottom: 0.25rem;
     }
-    .auth-brand span { color: #F5A623; }
+    .auth-brand span { color: #0EA5E9; }
     .auth-tagline { font-size: 13px; color: #8B949E; }
     .auth-card-body { padding: 2rem; }
     .auth-title {
@@ -46,7 +46,7 @@
     .btn-submit {
         display: block;
         width: 100%;
-        background: #F5A623;
+        background: #0EA5E9;
         color: #111827;
         border: none;
         border-radius: 10px;
@@ -58,16 +58,16 @@
         transition: background 200ms ease, transform 200ms ease;
     }
     .btn-submit:hover {
-        background: #D4890F;
+        background: #0284C7;
         transform: translateY(-1px);
     }
     .auth-link {
-        color: #F5A623;
+        color: #0EA5E9;
         font-weight: 600;
         text-decoration: none;
         transition: color 200ms ease;
     }
-    .auth-link:hover { color: #D4890F; text-decoration: underline; }
+    .auth-link:hover { color: #0284C7; text-decoration: underline; }
     #charCount.text-success { color: #10B981 !important; }
     #charCount.text-danger  { color: #EF4444 !important; }
 </style>

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Edit Profil')
 
@@ -18,7 +18,7 @@
         border-bottom: 1px solid rgba(255,255,255,0.08);
     }
     .profile-card-header h4 { margin: 0; font-weight: 700; font-size: 18px; }
-    .profile-card-header i { color: #F5A623; margin-right: 8px; }
+    .profile-card-header i { color: #0EA5E9; margin-right: 8px; }
     .avatar-wrapper {
         width: 100px; height: 100px;
         margin: 0 auto;
@@ -26,20 +26,20 @@
         overflow: hidden;
         background-color: #F8F9FA;
         display: flex; align-items: center; justify-content: center;
-        border: 2px solid #F5A623;
-        box-shadow: 0 4px 12px rgba(245,166,35,0.2);
+        border: 2px solid #0EA5E9;
+        box-shadow: 0 4px 12px rgba(14,165,233,0.2);
     }
     .avatar-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-    .avatar-wrapper i { font-size: 4rem; color: #D4890F; }
+    .avatar-wrapper i { font-size: 4rem; color: #0284C7; }
     .btn-submit {
         display: block; width: 100%;
-        background: #F5A623; color: #111827;
+        background: #0EA5E9; color: #111827;
         border: none; border-radius: 10px;
         padding: 13px; font-size: 15px; font-weight: 700;
         transition: background 200ms ease, transform 200ms ease;
     }
     .btn-submit:hover {
-        background: #D4890F; transform: translateY(-1px);
+        background: #0284C7; transform: translateY(-1px);
     }
     #charCount.text-success { color: #10B981 !important; }
     #charCount.text-danger  { color: #EF4444 !important; }
@@ -70,7 +70,7 @@
 
                         <div class="mb-4">
                             <label for="foto_profil" class="form-label">
-                                <i class="bi bi-image" style="color:#F5A623"></i> Foto Profil
+                                <i class="bi bi-image" style="color:#0EA5E9"></i> Foto Profil
                             </label>
                             <input type="file" class="form-control @error('foto_profil') is-invalid @enderror"
                                    id="foto_profil" name="foto_profil" accept="image/*">
@@ -82,7 +82,7 @@
 
                         <div class="mb-3">
                             <label for="name" class="form-label">
-                                <i class="bi bi-person" style="color:#F5A623"></i> Nama Lengkap
+                                <i class="bi bi-person" style="color:#0EA5E9"></i> Nama Lengkap
                             </label>
                             <input type="text" class="form-control @error('name') is-invalid @enderror"
                                    id="name" name="name" value="{{ $user->name }}" required>
@@ -93,14 +93,14 @@
 
                         <div class="mb-3">
                             <label class="form-label">
-                                <i class="bi bi-envelope" style="color:#F5A623"></i> Email <span class="text-muted">(tidak bisa diubah)</span>
+                                <i class="bi bi-envelope" style="color:#0EA5E9"></i> Email <span class="text-muted">(tidak bisa diubah)</span>
                             </label>
                             <input type="email" class="form-control" value="{{ $user->email }}" disabled style="background:#F3F4F6">
                         </div>
 
                         <div class="mb-3">
                             <label for="nomor_telepon" class="form-label">
-                                <i class="bi bi-telephone" style="color:#F5A623"></i> Nomor Telepon
+                                <i class="bi bi-telephone" style="color:#0EA5E9"></i> Nomor Telepon
                             </label>
                             <input type="tel" class="form-control @error('nomor_telepon') is-invalid @enderror"
                                    id="nomor_telepon" name="nomor_telepon" value="{{ $user->nomor_telepon }}"
@@ -114,7 +114,7 @@
 
                         <div class="mb-4">
                             <label for="alamat" class="form-label">
-                                <i class="bi bi-geo-alt" style="color:#F5A623"></i> Alamat
+                                <i class="bi bi-geo-alt" style="color:#0EA5E9"></i> Alamat
                             </label>
                             <textarea class="form-control @error('alamat') is-invalid @enderror"
                                       id="alamat" name="alamat" rows="4" minlength="30" maxlength="500" required>{{ $user->alamat }}</textarea>

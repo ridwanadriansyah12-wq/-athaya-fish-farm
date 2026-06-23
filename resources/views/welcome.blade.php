@@ -8,78 +8,137 @@
        WELCOME PAGE — Luxury Aquaculture Dark & Gold
     =================================================================== */
 
-    /* ── HERO ─────────────────────────────────────────────────────── */
+    /* ── HERO SLIDESHOW BACKGROUND ─────────────────────────────────── */
     .hero-section {
-        background: #0D1117;
-        background-image: radial-gradient(ellipse at 80% 10%, rgba(21,67,135,0.30) 0%, transparent 60%);
-        color: #fff;
-        padding: 5rem 0 0;
-        overflow: hidden;
         position: relative;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        color: #fff;
+        overflow: hidden;
+    }
+
+    /* Slideshow container behind everything */
+    .hero-slideshow {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+    }
+
+    /* Each slide */
+    .hero-slide {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+        opacity: 0;
+        transition: opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: opacity, transform;
+        animation: kenBurns 8s ease-in-out infinite alternate;
+    }
+    .hero-slide.active {
+        opacity: 1;
+    }
+
+    /* Ken Burns zoom effect per slide — stagger via nth-child */
+    @keyframes kenBurns {
+        0%   { transform: scale(1.00) translateX(0px) translateY(0px); }
+        100% { transform: scale(1.10) translateX(-15px) translateY(-8px); }
+    }
+    .hero-slide:nth-child(2) { animation-direction: alternate-reverse; }
+    .hero-slide:nth-child(3) { animation-delay: 1s; }
+    .hero-slide:nth-child(4) { animation-direction: alternate-reverse; animation-delay: 0.5s; }
+    .hero-slide:nth-child(5) { animation-delay: 1.5s; }
+
+    /* Multi-layer gradient overlay for legibility */
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        background:
+            linear-gradient(to bottom,  rgba(8,15,30,0.55) 0%, rgba(8,15,30,0.25) 40%, rgba(8,15,30,0.70) 100%),
+            linear-gradient(to right,   rgba(8,15,30,0.75) 0%, rgba(8,15,30,0.10) 55%, transparent 100%);
+    }
+
+    /* Content sits above overlay */
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        padding: 6rem 0 5rem;
     }
 
     .hero-badge {
         display: inline-block;
-        border: 1px solid #F5A623;
-        color: #F5A623;
-        background: transparent;
+        border: 1px solid #0EA5E9;
+        color: #0EA5E9;
+        background: rgba(14,165,233,0.10);
         border-radius: 99px;
         padding: 6px 18px;
         font-size: 13px;
         font-weight: 600;
         letter-spacing: 0.4px;
         margin-bottom: 1.25rem;
+        backdrop-filter: blur(4px);
     }
 
     .hero-title {
         font-family: 'Playfair Display', Georgia, serif;
-        font-size: clamp(40px, 6vw, 56px);
-        font-weight: 700;
-        line-height: 1.12;
+        font-size: clamp(36px, 5.5vw, 64px);
+        font-weight: 800;
+        line-height: 1.10;
         color: #F0F6FC;
         margin-bottom: 1.25rem;
+        text-shadow: 0 2px 20px rgba(0,0,0,0.5);
     }
 
     .hero-title .gold-text {
-        color: #F5A623;
+        color: #0EA5E9;
+        text-shadow: 0 0 30px rgba(14,165,233,0.5);
     }
 
     .hero-subtitle {
         font-family: 'Inter', sans-serif;
-        font-size: 16px;
-        line-height: 1.7;
-        color: #8B949E;
-        max-width: 520px;
+        font-size: clamp(14px, 2vw, 17px);
+        line-height: 1.75;
+        color: rgba(240,246,252,0.80);
+        max-width: 500px;
         margin-bottom: 2rem;
+        text-shadow: 0 1px 8px rgba(0,0,0,0.4);
     }
 
     /* CTA Buttons */
     .btn-hero-primary {
-        background: #F5A623;
-        color: #111827;
+        background: #0EA5E9;
+        color: #ffffff;
         border: none;
         border-radius: 99px;
         padding: 14px 32px;
         font-size: 15px;
-        font-weight: 600;
+        font-weight: 700;
         font-family: 'Inter', sans-serif;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         gap: 8px;
         transition: transform 200ms ease, box-shadow 200ms ease, background 200ms ease;
+        box-shadow: 0 4px 20px rgba(14,165,233,0.40);
     }
     .btn-hero-primary:hover {
-        background: #D4890F;
-        color: #111827;
-        transform: scale(1.03);
-        box-shadow: 0 4px 20px rgba(245,166,35,0.35);
+        background: #0284C7;
+        color: #ffffff;
+        transform: scale(1.05);
+        box-shadow: 0 8px 32px rgba(14,165,233,0.55);
     }
 
     .btn-hero-secondary {
-        border: 1.5px solid rgba(255,255,255,0.25);
+        border: 1.5px solid rgba(255,255,255,0.40);
         color: #fff;
-        background: transparent;
+        background: rgba(255,255,255,0.08);
+        backdrop-filter: blur(8px);
         border-radius: 99px;
         padding: 14px 32px;
         font-size: 15px;
@@ -89,35 +148,72 @@
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        transition: border-color 200ms ease, background 200ms ease;
+        transition: border-color 200ms ease, background 200ms ease, color 200ms ease;
     }
     .btn-hero-secondary:hover {
-        border-color: #F5A623;
-        color: #F5A623;
-        background: rgba(245,166,35,0.05);
+        border-color: #0EA5E9;
+        color: #0EA5E9;
+        background: rgba(14,165,233,0.12);
     }
 
-    /* Hero image */
-    .hero-img-frame {
-        width: 380px;
-        height: 380px;
+    /* ── SLIDE INDICATORS ────────────────────────────────────────── */
+    .hero-dots {
+        position: absolute;
+        bottom: 90px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 3;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+    .hero-dot {
+        width: 8px;
+        height: 8px;
         border-radius: 50%;
-        border: 2px solid rgba(245,166,35,0.5);
-        overflow: hidden;
-        position: relative;
-        display: inline-block;
-        filter: drop-shadow(0 0 28px rgba(245,166,35,0.20));
-        animation: float 6s ease-in-out infinite;
+        background: rgba(255,255,255,0.40);
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        transition: background 0.3s ease, transform 0.3s ease, width 0.3s ease;
+        outline: none;
     }
-    .hero-img-frame img {
-        width: 100%; height: 100%;
-        object-fit: cover;
+    .hero-dot.active {
+        background: #0EA5E9;
+        width: 28px;
+        border-radius: 99px;
+        transform: none;
+        box-shadow: 0 0 10px rgba(14,165,233,0.6);
     }
 
-    @keyframes float {
-        0%   { transform: translateY(0px); }
-        50%  { transform: translateY(-16px); }
-        100% { transform: translateY(0px); }
+    /* ── SLIDE CAPTION STRIP ─────────────────────────────────────── */
+    .hero-slide-caption {
+        position: absolute;
+        bottom: 60px;
+        right: 2rem;
+        z-index: 3;
+        font-family: 'Inter', sans-serif;
+        font-size: 12px;
+        color: rgba(255,255,255,0.50);
+        letter-spacing: 0.5px;
+        text-align: right;
+        transition: opacity 0.5s ease;
+    }
+
+    /* ── PROGRESS BAR ─────────────────────────────────────────────── */
+    .hero-progress {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 3px;
+        width: 0%;
+        background: transparent;
+        z-index: 3;
+        transition: none;
+        border-radius: 0 2px 2px 0;
+    }
+    .hero-progress.animating {
+        transition: width linear;
     }
 
     /* Wave divider */
@@ -126,11 +222,12 @@
         bottom: 0; left: 0;
         width: 100%; overflow: hidden;
         line-height: 0;
+        z-index: 2;
     }
     .hero-wave svg {
         display: block;
         width: calc(100% + 1.3px);
-        height: 56px;
+        height: 70px;
     }
 
     /* ── FEATURES SECTION ─────────────────────────────────────────── */
@@ -151,16 +248,16 @@
     .feature-card:hover {
         transform: translateY(-4px);
         box-shadow: 0 8px 24px rgba(0,0,0,0.10);
-        border-color: #F5A623;
+        border-color: #0EA5E9;
     }
 
     .feature-icon {
         width: 48px; height: 48px;
         border-radius: 50%;
-        background: #FEF3C7;
+        background: #E0F2FE;
         display: flex; align-items: center; justify-content: center;
         font-size: 20px;
-        color: #D97706;
+        color: #0EA5E9;
         margin-bottom: 1rem;
         flex-shrink: 0;
     }
@@ -208,8 +305,8 @@
     .btn-catalog-detail {
         display: block;
         width: 100%;
-        background: #F5A623;
-        color: #111827;
+        background: #0EA5E9;
+        color: #ffffff;
         border: none;
         border-radius: 8px;
         padding: 9px 0;
@@ -220,7 +317,7 @@
         text-align: center;
         transition: background 200ms ease;
     }
-    .btn-catalog-detail:hover { background: #D4890F; color: #111827; }
+    .btn-catalog-detail:hover { background: #0284C7; color: #ffffff; }
 
     .btn-catalog-secondary {
         background: #E5E7EB;
@@ -235,8 +332,8 @@
 
     /* View all button */
     .btn-view-all {
-        border: 1.5px solid #F5A623;
-        color: #F5A623;
+        border: 1.5px solid #0EA5E9;
+        color: #0EA5E9;
         border-radius: 99px;
         padding: 12px 32px;
         font-size: 15px;
@@ -249,8 +346,8 @@
         transition: background 200ms ease, color 200ms ease;
     }
     .btn-view-all:hover {
-        background: #F5A623;
-        color: #111827;
+        background: #0EA5E9;
+        color: #ffffff;
     }
 
     /* ── TENTANG SECTION ──────────────────────────────────────────── */
@@ -278,15 +375,23 @@
     .about-info-title { font-size: 13px; font-weight: 600; color: #111827; }
     .about-info-val   { font-size: 13px; color: #6B7280; }
 
+    /* ── RESPONSIVE ─────────────────────────────────────────────── */
     @media (max-width: 991px) {
-        .hero-section { padding-top: 3rem; }
-        .hero-title   { font-size: 36px; }
-        .hero-img-frame { width: 280px; height: 280px; }
-        .hero-section .hero-img-col { padding-top: 2rem; }
+        .hero-content { padding: 5rem 0 4rem; }
+        .hero-dots    { bottom: 80px; }
+        .hero-slide-caption { display: none; }
+    }
+    @media (max-width: 767px) {
+        .hero-section { min-height: 85vh; }
+        .hero-content { padding: 4.5rem 0 4rem; text-align: center; }
+        .hero-subtitle { margin-left: auto; margin-right: auto; }
+        .hero-dots { bottom: 72px; }
     }
     @media (max-width: 575px) {
+        .hero-section { min-height: 80vh; }
+        .hero-content { padding: 4rem 0 3.5rem; }
         .btn-hero-primary, .btn-hero-secondary { width: 100%; justify-content: center; }
-        .hero-img-frame { width: 220px; height: 220px; }
+        .hero-dots { bottom: 64px; }
     }
 </style>
 @endsection
@@ -294,56 +399,89 @@
 @section('content')
 
     {{-- ===================================================================
-         HERO SECTION
+         HERO SECTION — Background Fish Slideshow
     =================================================================== --}}
-    <div class="hero-section">
+    <div class="hero-section" id="hero-section">
+
+        {{-- Background Slideshow --}}
+        <div class="hero-slideshow" aria-hidden="true">
+            <div class="hero-slide active"
+                 style="background-image: url('{{ asset('images/hero-fish/fish-1.jpg') }}');"
+                 data-caption="Ikan Cichlid Albino"></div>
+            <div class="hero-slide"
+                 style="background-image: url('{{ asset('images/hero-fish/fish-2.jpg') }}');"
+                 data-caption="Ikan Cichlid Biru Emas"></div>
+            <div class="hero-slide"
+                 style="background-image: url('{{ asset('images/hero-fish/fish-3.jpg') }}');"
+                 data-caption="Ikan Cichlid Pelangi"></div>
+            <div class="hero-slide"
+                 style="background-image: url('{{ asset('images/hero-fish/fish-4.jpg') }}');"
+                 data-caption="Ikan Cichlid Kuning Kelabu"></div>
+            <div class="hero-slide"
+                 style="background-image: url('{{ asset('images/hero-fish/fish-5.jpg') }}');"
+                 data-caption="Ikan Cichlid Biru Ungu"></div>
+        </div>
+
+        {{-- Gradient Overlay --}}
+        <div class="hero-overlay"></div>
+
+        {{-- Text Content --}}
+        <div class="hero-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-7 col-xl-6 text-center text-md-start">
+                        <div class="hero-badge animate-in">#1 E-Commerce Ikan Segar</div>
+                        <h1 class="hero-title animate-in" style="transition-delay:80ms">
+                            Athaya <span class="gold-text">Fish Farm</span>
+                        </h1>
+                        <p class="hero-subtitle animate-in" style="transition-delay:160ms">
+                            Platform terpercaya untuk membeli ikan segar berkualitas tinggi dan layanan jasa budidaya
+                            profesional secara langsung dari ahlinya.
+                        </p>
+
+                        <div class="d-flex flex-column flex-sm-row justify-content-center justify-content-md-start gap-3 animate-in" style="transition-delay:240ms">
+                            @auth
+                                <a href="{{ route('katalog.index') }}" class="btn-hero-primary">
+                                    <i class="bi bi-shop"></i> Mulai Belanja
+                                </a>
+                                <a href="{{ route('dashboard') }}" class="btn-hero-secondary">
+                                    <i class="bi bi-speedometer2"></i> Ke Dashboard
+                                </a>
+                            @else
+                                <a href="{{ route('login') }}" class="btn-hero-primary">
+                                    <i class="bi bi-box-arrow-in-right"></i> Masuk Sekarang
+                                </a>
+                                <a href="{{ route('register') }}" class="btn-hero-secondary">
+                                    <i class="bi bi-person-plus"></i> Buat Akun Baru
+                                </a>
+                            @endauth
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Slide Dots Navigation --}}
+        <div class="hero-dots" role="tablist" aria-label="Navigasi Slide">
+            <button class="hero-dot active" data-slide="0" role="tab" aria-label="Slide 1" aria-selected="true"></button>
+            <button class="hero-dot" data-slide="1" role="tab" aria-label="Slide 2" aria-selected="false"></button>
+            <button class="hero-dot" data-slide="2" role="tab" aria-label="Slide 3" aria-selected="false"></button>
+            <button class="hero-dot" data-slide="3" role="tab" aria-label="Slide 4" aria-selected="false"></button>
+            <button class="hero-dot" data-slide="4" role="tab" aria-label="Slide 5" aria-selected="false"></button>
+        </div>
+
+        {{-- Slide Caption --}}
+        <div class="hero-slide-caption" id="hero-caption">Ikan Cichlid Albino</div>
+
+        {{-- Progress Bar --}}
+        <div class="hero-progress" id="hero-progress"></div>
+
+        {{-- Wave Divider --}}
         <div class="hero-wave">
             <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
                 <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V95.8C59.71,118,130.85,130.2,201.3,123.63,243.68,119.67,283.47,105.15,321.39,56.44Z"
                     fill="#F8F9FA"></path>
             </svg>
-        </div>
-
-        <div class="container position-relative" style="z-index:1; padding-bottom: 4.5rem;">
-            <div class="row align-items-center">
-                {{-- Text Content --}}
-                <div class="col-lg-6 text-center text-lg-start mb-5 mb-lg-0">
-                    <div class="hero-badge animate-in">#1 E-Commerce Ikan Segar</div>
-                    <h1 class="hero-title animate-in" style="transition-delay:80ms">
-                        Athaya <span class="gold-text">Fish Farm</span>
-                    </h1>
-                    <p class="hero-subtitle animate-in" style="transition-delay:160ms">
-                        Platform terpercaya untuk membeli ikan segar berkualitas tinggi dan layanan jasa budidaya
-                        profesional secara langsung dari ahlinya.
-                    </p>
-
-                    <div class="d-flex flex-column flex-sm-row justify-content-center justify-content-lg-start gap-3 animate-in" style="transition-delay:240ms">
-                        @auth
-                            <a href="{{ route('katalog.index') }}" class="btn-hero-primary">
-                                <i class="bi bi-shop"></i> Mulai Belanja
-                            </a>
-                            <a href="{{ route('dashboard') }}" class="btn-hero-secondary">
-                                <i class="bi bi-speedometer2"></i> Ke Dashboard
-                            </a>
-                        @else
-                            <a href="{{ route('login') }}" class="btn-hero-primary">
-                                <i class="bi bi-box-arrow-in-right"></i> Masuk Sekarang
-                            </a>
-                            <a href="{{ route('register') }}" class="btn-hero-secondary">
-                                <i class="bi bi-person-plus"></i> Buat Akun Baru
-                            </a>
-                        @endauth
-                    </div>
-                </div>
-
-                {{-- Image Illustration --}}
-                <div class="col-lg-6 d-flex justify-content-center hero-img-col animate-in" style="transition-delay:120ms">
-                    <div class="hero-img-frame">
-                        <img src="https://images.unsplash.com/photo-1524704796725-9fc3044a58b2?q=80&w=800&auto=format&fit=crop"
-                            alt="Ikan Segar Berkualitas dari Athaya Fish Farm">
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -398,8 +536,8 @@
                         <div class="col-md-6 col-lg-3">
                             <div class="product-card animate-in h-100 d-flex flex-column">
                                 <div class="product-image">
-                                    @if($produk->gambar)
-                                        <img src="{{ asset('storage/' . $produk->gambar) }}"
+                                    @if($produk->first_image)
+                                        <img src="{{ asset('storage/' . $produk->first_image) }}"
                                             alt="{{ $produk->nama_produk }}"
                                             class="product-img-inner">
                                     @else
@@ -463,7 +601,7 @@
                     <div class="about-card animate-in">
                         <div class="card-body p-4 d-flex flex-column justify-content-center h-100">
                             <h5 class="fw-bold mb-3" style="color:#111827;font-size:18px;">
-                                <i class="bi bi-building me-2" style="color:#F5A623"></i>Athaya Fish Farm
+                                <i class="bi bi-building me-2" style="color:#0EA5E9"></i>Athaya Fish Farm
                             </h5>
                             <p style="font-size:14px;color:#6B7280;line-height:1.7;margin-bottom:1rem;">
                                 Athaya Fish Farm adalah platform e-commerce modern yang menghubungkan petani
@@ -490,7 +628,7 @@
                                     </div>
                                 </div>
                                 <div class="about-info-item">
-                                    <i class="bi bi-clock-fill mt-1" style="color:#F5A623;flex-shrink:0"></i>
+                                    <i class="bi bi-clock-fill mt-1" style="color:#0EA5E9;flex-shrink:0"></i>
                                     <div>
                                         <div class="about-info-title">Jam Operasional</div>
                                         <div class="about-info-val">Senin – Sabtu, 08.00 – 17.00 WIB</div>
@@ -537,4 +675,128 @@
         </div>
     </section>
 
+@endsection
+
+@section('extra-js')
+<script>
+(function () {
+    'use strict';
+
+    /* ── Config ─────────────────────────────────────────────────── */
+    const SLIDE_DURATION = 5000;   // ms between auto-slides
+    const FADE_DURATION  = 1400;   // must match CSS transition (ms)
+
+    /* ── DOM refs ───────────────────────────────────────────────── */
+    const slides   = Array.from(document.querySelectorAll('.hero-slide'));
+    const dots     = Array.from(document.querySelectorAll('.hero-dot'));
+    const caption  = document.getElementById('hero-caption');
+    const progress = document.getElementById('hero-progress');
+    const hero     = document.getElementById('hero-section');
+
+    if (!slides.length) return;  // guard: not on welcome page
+
+    /* ── State ───────────────────────────────────────────────────── */
+    let current   = 0;
+    let timer     = null;
+    let isPaused  = false;
+
+    /* ── Core: go to slide N ─────────────────────────────────────── */
+    function goTo(idx) {
+        if (idx === current) return;
+
+        // Remove active from current slide & dot
+        slides[current].classList.remove('active');
+        dots[current].classList.remove('active');
+        dots[current].setAttribute('aria-selected', 'false');
+
+        current = (idx + slides.length) % slides.length;
+
+        // Activate new slide & dot
+        slides[current].classList.add('active');
+        dots[current].classList.add('active');
+        dots[current].setAttribute('aria-selected', 'true');
+
+        // Update caption
+        if (caption) {
+            caption.style.opacity = '0';
+            setTimeout(() => {
+                caption.textContent = slides[current].dataset.caption || '';
+                caption.style.opacity = '1';
+            }, 400);
+        }
+
+        // Restart progress bar
+        restartProgress();
+    }
+
+    /* ── Progress bar animation ──────────────────────────────────── */
+    function restartProgress() {
+        if (!progress) return;
+        // Snap to 0 without transition
+        progress.classList.remove('animating');
+        progress.style.width = '0%';
+        // Force reflow so browser registers the reset
+        void progress.offsetWidth;
+        // Animate to 100% over SLIDE_DURATION
+        progress.classList.add('animating');
+        progress.style.transition = `width ${SLIDE_DURATION}ms linear`;
+        progress.style.width = '100%';
+    }
+
+    /* ── Auto-slide timer ────────────────────────────────────────── */
+    function startTimer() {
+        clearInterval(timer);
+        timer = setInterval(() => {
+            if (!isPaused) goTo(current + 1);
+        }, SLIDE_DURATION);
+    }
+
+    /* ── Dot click navigation ────────────────────────────────────── */
+    dots.forEach(dot => {
+        dot.addEventListener('click', () => {
+            goTo(parseInt(dot.dataset.slide, 10));
+            startTimer(); // reset interval on manual nav
+        });
+    });
+
+    /* ── Keyboard navigation ─────────────────────────────────────── */
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') { goTo(current + 1); startTimer(); }
+        if (e.key === 'ArrowLeft')  { goTo(current - 1); startTimer(); }
+    });
+
+    /* ── Touch / Swipe support ───────────────────────────────────── */
+    let touchStartX = 0;
+    let touchStartY = 0;
+    hero.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+    hero.addEventListener('touchend', (e) => {
+        const dx = e.changedTouches[0].screenX - touchStartX;
+        const dy = e.changedTouches[0].screenY - touchStartY;
+        // Only trigger if horizontal swipe dominates
+        if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+            if (dx < 0) goTo(current + 1);   // swipe left → next
+            else        goTo(current - 1);   // swipe right → prev
+            startTimer();
+        }
+    }, { passive: true });
+
+    /* ── Pause on hover (desktop) ────────────────────────────────── */
+    hero.addEventListener('mouseenter', () => { isPaused = true; });
+    hero.addEventListener('mouseleave', () => { isPaused = false; });
+
+    /* ── Pause when tab/window hidden (battery saving) ───────────── */
+    document.addEventListener('visibilitychange', () => {
+        isPaused = document.hidden;
+        if (!document.hidden) restartProgress();
+    });
+
+    /* ── Init ────────────────────────────────────────────────────── */
+    restartProgress();
+    startTimer();
+
+})();
+</script>
 @endsection
