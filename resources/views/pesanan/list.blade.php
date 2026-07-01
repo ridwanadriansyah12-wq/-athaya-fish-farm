@@ -7,7 +7,8 @@
     <h2 class="mb-4"><i class="bi bi-receipt"></i> Pesanan Saya</h2>
 
     @if($pesanan->count() > 0)
-        <div class="card">
+        {{-- Tampilan Desktop --}}
+        <div class="card d-none d-md-block">
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
                     <thead class="table-light">
@@ -46,6 +47,40 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+
+        {{-- Tampilan Mobile --}}
+        <div class="d-md-none">
+            @foreach($pesanan as $order)
+                <div class="card mb-3 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-bold text-primary">#{{ $order->nomor_pesanan }}</span>
+                            <span class="badge bg-{{ 
+                                $order->status === 'selesai' ? 'success' : 
+                                ($order->status === 'pending' ? 'warning' : 
+                                ($order->status === 'ditolak' ? 'danger' : 'info'))
+                            }}">
+                                {{ ucfirst(str_replace('_', ' ', $order->status)) }}
+                            </span>
+                        </div>
+                        <div class="text-muted small mb-3">
+                            <i class="bi bi-calendar3 me-1"></i> {{ $order->created_at->format('d M Y') }}
+                            <span class="mx-2">•</span>
+                            <i class="bi bi-bag me-1"></i> {{ $order->detailPesanan->count() }} Item
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                            <div>
+                                <div class="text-muted small" style="font-size: 0.75rem;">Total Pembayaran</div>
+                                <strong class="text-success">Rp {{ number_format($order->total_pembayaran, 0, ',', '.') }}</strong>
+                            </div>
+                            <a href="{{ route('pesanan.show', $order) }}" class="btn btn-sm btn-primary px-3">
+                                Lihat Detail
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
         </div>
 
         <div class="d-flex justify-content-center mt-4">

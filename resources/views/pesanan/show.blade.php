@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Detail Pesanan - ' . $pesanan->nomor_pesanan)
 
@@ -73,7 +73,9 @@
 
                         <!-- Tabel Detail Items -->
                         <h6 class="mb-3 fw-bold">Item Pesanan:</h6>
-                        <div class="table-responsive">
+                        
+                        {{-- Tampilan Desktop --}}
+                        <div class="table-responsive d-none d-md-block">
                             <table class="table table-sm table-hover">
                                 <thead class="table-light">
                                     <tr>
@@ -86,7 +88,7 @@
                                 <tbody>
                                     @foreach($detailPesanan as $detail)
                                         <tr>
-                                            <td>{{ optional($detail->katalogIkan)->nama_produk ?? '<em class="text-muted">Produk dihapus</em>' }}
+                                            <td>{{ optional($detail->katalogIkan)->nama_produk ?? 'Produk dihapus' }}
                                             </td>
                                             <td class="text-center">{{ $detail->kuantitas }}</td>
                                             <td class="text-end">Rp {{ number_format($detail->harga_satuan, 0, ',', '.') }}</td>
@@ -108,6 +110,28 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                        </div>
+
+                        {{-- Tampilan Mobile --}}
+                        <div class="d-md-none border rounded bg-white mb-3">
+                            @foreach($detailPesanan as $detail)
+                                <div class="p-3 border-bottom">
+                                    <div class="fw-semibold text-dark">
+                                        {{ optional($detail->katalogIkan)->nama_produk ?? 'Produk dihapus' }}
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mt-2 small text-muted">
+                                        <span>{{ $detail->kuantitas }} unit x Rp {{ number_format($detail->harga_satuan, 0, ',', '.') }}</span>
+                                        <span class="fw-bold text-dark">Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</span>
+                                    </div>
+                                    @if($detail->dengan_layanan_budidaya)
+                                        <div class="mt-2 p-2 bg-light rounded text-muted" style="font-size: 0.8rem; border: 1px solid #e9ecef;">
+                                            <i class="bi bi-info-circle me-1"></i>
+                                            <strong>Layanan Budidaya:</strong> {{ $detail->durasi_budidaya_hari }} hari
+                                            <div class="text-dark fw-semibold mt-1">Biaya: Rp {{ number_format($detail->biaya_budidaya, 0, ',', '.') }}</div>
+                                        </div>
+                                    @endif
+                                </div>
+                            @endforeach
                         </div>
 
                         {{-- Catatan Persiapan: hanya tampil saat status 'persiapan' --}}

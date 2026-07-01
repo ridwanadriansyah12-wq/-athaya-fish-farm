@@ -28,7 +28,9 @@
                             <div class="card-header bg-white py-3">
                                 <h5 class="mb-0 fw-bold"><i class="bi bi-bag-check text-primary me-2"></i>Produk Dipilih</h5>
                             </div>
-                            <div class="table-responsive">
+                            
+                            {{-- Tampilan Desktop --}}
+                            <div class="table-responsive d-none d-md-block">
                                 <table class="table table-hover align-middle mb-0">
                                     <thead class="table-light">
                                         <tr>
@@ -69,9 +71,9 @@
                                                                 <i class="bi bi-dash-lg"></i>
                                                             </button>
                                                         </form>
-
+ 
                                                         <span class="mx-1 fw-bold" style="min-width: 20px;">{{ $item['qty'] }}</span>
-
+ 
                                                         <form action="{{ route('cart.update', $item['katalog']->id) }}" method="POST"
                                                             style="margin: 0;">
                                                             @csrf
@@ -80,7 +82,7 @@
                                                                 <i class="bi bi-plus-lg"></i>
                                                             </button>
                                                         </form>
-
+ 
                                                         <form action="{{ route('cart.remove', $item['katalog']->id) }}" method="POST"
                                                             style="margin: 0;" class="ms-2">
                                                             @csrf
@@ -94,6 +96,54 @@
                                         @endforeach
                                     </tbody>
                                 </table>
+                            </div>
+
+                            {{-- Tampilan Mobile --}}
+                            <div class="d-md-none">
+                                @foreach($items as $item)
+                                    <div class="p-3 border-bottom">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div>
+                                                <a href="{{ route('katalog.show', $item['katalog']) }}" class="text-decoration-none fw-semibold text-dark d-block">
+                                                    {{ $item['katalog']->nama_produk }}
+                                                </a>
+                                                <small class="text-muted">{{ $item['katalog']->jenisIkan->nama_jenis ?? '-' }}</small>
+                                            </div>
+                                            <form action="{{ route('cart.remove', $item['katalog']->id) }}" method="POST" style="margin: 0;">
+                                                @csrf
+                                                <button type="submit" class="btn btn-sm btn-link text-danger p-0" title="Hapus">
+                                                    <i class="bi bi-trash fs-5"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <div class="text-muted small">
+                                                Rp {{ number_format($item['katalog']->harga_satuan, 0, ',', '.') }} / unit
+                                            </div>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <form action="{{ route('cart.update', $item['katalog']->id) }}" method="POST" style="margin: 0;">
+                                                    @csrf
+                                                    <input type="hidden" name="action" value="decrease">
+                                                    <button type="submit" class="btn btn-xs btn-outline-secondary px-2 py-1" style="font-size: 0.75rem; padding: 2px 8px !important;" title="Kurangi">
+                                                        <i class="bi bi-dash"></i>
+                                                    </button>
+                                                </form>
+                                                <span class="fw-bold px-1" style="font-size: 0.9rem;">{{ $item['qty'] }}</span>
+                                                <form action="{{ route('cart.update', $item['katalog']->id) }}" method="POST" style="margin: 0;">
+                                                    @csrf
+                                                    <input type="hidden" name="action" value="increase">
+                                                    <button type="submit" class="btn btn-xs btn-outline-secondary px-2 py-1" style="font-size: 0.75rem; padding: 2px 8px !important;" title="Tambah">
+                                                        <i class="bi bi-plus"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mt-2 pt-2" style="border-top: 1px dashed #dee2e6;">
+                                            <span class="text-muted small">Subtotal:</span>
+                                            <strong class="text-success">Rp {{ number_format($item['subtotal'], 0, ',', '.') }}</strong>
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
 
