@@ -5,7 +5,7 @@
 @section('extra-css')
 <style>
     /* ── Katalog Show / Product Detail ── */
-    .detail-section { padding: 3rem 0; }
+    .detail-section { padding-top: 3rem; padding-bottom: 3rem; }
     .breadcrumb { margin-bottom: 2rem; font-size: 14px; }
     .breadcrumb a { color: #0EA5E9; text-decoration: none; font-weight: 500; }
     .breadcrumb a:hover { color: #0284C7; text-decoration: underline; }
