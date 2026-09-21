@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\KatalogIkan;
 use App\Models\Pesanan;
+use App\Models\Pembayaran;
 use App\Models\PenawaranBudidaya;
 use Illuminate\Http\Request;
 
@@ -16,10 +17,19 @@ class AdminController extends Controller
     public function index()
     {
         try {
-            $totalUsers = User::count();
-            $totalOrders = Pesanan::count();
-            $totalRevenue = Penjualan::sum('Total_Pendapatan') ?? 0;
+            $totalUsers    = User::count();
+            $totalOrders   = Pesanan::count();
             $pendingOrders = Pesanan::where('status', 'pending')->count();
+
+            // Hitung total revenue dari pembayaran yang sudah settlement/lunas
+            $totalRevenue  = Pembayaran::whereIn('status_pembayaran', ['settlement', 'capture'])
+                                ->sum('jumlah');
+
+            // Revenue bulan ini
+            $revenueThisMonth = Pembayaran::whereIn('status_pembayaran', ['settlement', 'capture'])
+                ->whereMonth('dibayar_at', now()->month)
+                ->whereYear('dibayar_at', now()->year)
+                ->sum('jumlah');
 
             $recentOrders = Pesanan::with('customer')
                 ->orderBy('created_at', 'desc')
@@ -27,26 +37,31 @@ class AdminController extends Controller
                 ->get();
 
             $statistik = [
-                'total_users' => $totalUsers,
-                'total_orders' => $totalOrders,
-                'total_revenue' => $totalRevenue,
-                'pending_orders' => $pendingOrders,
-                'total_customers' => User::where('role', 'customer')->count(),
-                'total_pemilik' => User::where('role', 'pemilik')->count(),
-                'pesanan_selesai' => Pesanan::where('status', 'selesai')->count(),
-                'total_produk' => KatalogIkan::count(),
-                'total_pesanan' => $totalOrders,
-                'pesanan_pending' => $pendingOrders,
+                'total_users'         => $totalUsers,
+                'total_orders'        => $totalOrders,
+                'total_revenue'       => $totalRevenue,
+                'revenue_this_month'  => $revenueThisMonth,
+                'pending_orders'      => $pendingOrders,
+                'total_customers'     => User::where('role', 'customer')->count(),
+                'total_pemilik'       => User::where('role', 'pemilik')->count(),
+                'pesanan_lunas'       => Pesanan::where('status', 'lunas')->count(),
+                'pesanan_selesai'     => Pesanan::where('status', 'selesai')->count(),
+                'pesanan_dikonfirmasi'=> Pesanan::where('status', 'dikonfirmasi')->count(),
+                'total_produk'        => KatalogIkan::count(),
+                'produk_tersedia'     => KatalogIkan::where('tersedia', true)->count(),
+                'total_pesanan'       => $totalOrders,
+                'pesanan_pending'     => $pendingOrders,
+                'budidaya_pending'    => PenawaranBudidaya::where('status', 'pending')->count(),
             ];
 
             return view('admin.dashboard', [
-                'statistik' => $statistik,
+                'statistik'    => $statistik,
                 'recentOrders' => $recentOrders,
             ]);
         } catch (\Exception $e) {
             \Log::error('Admin Dashboard Error: ' . $e->getMessage());
             return view('admin.dashboard', [
-                'statistik' => [],
+                'statistik'    => [],
                 'recentOrders' => collect(),
             ]);
         }

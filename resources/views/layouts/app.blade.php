@@ -55,6 +55,11 @@
         /* ===== BASE ===== */
         *, *::before, *::after { box-sizing: border-box; }
 
+        html, body {
+            overflow-x: hidden; /* Cegah horizontal scroll & navbar geser */
+            max-width: 100%;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--light-bg);
@@ -81,10 +86,13 @@
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border-subtle);
-            padding: 0.4rem 1.5rem;
+            padding: 0.4rem 1rem;
             position: sticky;
             top: 0;
             z-index: 1030;
+            width: 100%;
+            left: 0;
+            right: 0;
         }
 
         .navbar-brand {
@@ -97,6 +105,13 @@
             height: 40px;
             object-fit: contain;
             image-rendering: -webkit-optimize-contrast;
+        }
+
+        /* Navbar full-width: override Bootstrap container-fluid padding */
+        .navbar .container-fluid {
+            padding-left: 1rem;
+            padding-right: 1rem;
+            max-width: 100%;
         }
 
         .nav-link {
@@ -501,53 +516,208 @@
         }
 
         /* ===================================================================
-           SWEETALERT2 ROLE THEMES
+           NOTIFICATION SYSTEM — Mobile-First Design
+           Prinsip: non-blocking toast, compact popup, responsive layout
         =================================================================== */
 
-        /* -- SHARED -- */
+        /* ── BASE: Font family semua popup ── */
         .swal2-popup { font-family: 'Inter', sans-serif !important; }
 
-        /* -- CUSTOMER: Teal segar -- */
-        .swal-customer.swal2-popup {
+        /* ================================================================
+           NOTIFIKASI / TOAST — Modern Non-Blocking Snackbar (Multi-Device)
+        ================================================================ */
+        /* Pastikan container toast tidak mengambil tinggi 100% layar (fix bug stretching) */
+        body.swal2-toast-shown .swal2-container {
+            height: auto !important;
+            max-height: 100vh !important;
+            display: flex !important;
+            flex-direction: column !important;
+            pointer-events: none !important;
+            padding: 16px !important;
+            box-sizing: border-box !important;
+            background: transparent !important;
+            z-index: 10000 !important;
+        }
+
+        body.swal2-toast-shown .swal2-container.swal2-top-end,
+        body.swal2-toast-shown .swal2-container.swal2-top-right {
+            inset: 0 0 auto auto !important;
+            align-items: flex-end !important;
+            justify-content: flex-start !important;
+            transform: none !important;
+        }
+
+        body.swal2-toast-shown .swal2-container.swal2-top-start,
+        body.swal2-toast-shown .swal2-container.swal2-top-left {
+            inset: 0 auto auto 0 !important;
+            align-items: flex-start !important;
+            justify-content: flex-start !important;
+            transform: none !important;
+        }
+
+        body.swal2-toast-shown .swal2-container.swal2-bottom-end,
+        body.swal2-toast-shown .swal2-container.swal2-bottom-right {
+            inset: auto 0 0 auto !important;
+            align-items: flex-end !important;
+            justify-content: flex-end !important;
+            transform: none !important;
+        }
+
+        body.swal2-toast-shown .swal2-container.swal2-bottom,
+        body.swal2-toast-shown .swal2-container.swal2-bottom-center {
+            inset: auto 0 0 0 !important;
+            align-items: center !important;
+            justify-content: flex-end !important;
+            transform: none !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+        }
+
+        body.swal2-toast-shown .swal2-container.swal2-top,
+        body.swal2-toast-shown .swal2-container.swal2-top-center {
+            inset: 0 0 auto 0 !important;
+            align-items: center !important;
+            justify-content: flex-start !important;
+            transform: none !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+        }
+
+        /* Toast Popup Card Polish */
+        .swal2-popup.swal2-toast {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            height: auto !important;
+            min-height: 48px !important;
+            max-height: none !important;
+            width: auto !important;
+            max-width: 440px !important;
+            min-width: 280px !important;
+            padding: 10px 14px !important;
+            border-radius: 12px !important;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.06) !important;
+            pointer-events: auto !important;
+            margin: 6px 0 !important;
+            gap: 12px !important;
+            border-left: none !important;
+            border-bottom: none !important;
+            border-right: none !important;
+            box-sizing: border-box !important;
+            position: relative !important;
+        }
+
+        .swal2-popup.swal2-toast .swal2-icon {
+            font-size: 14px !important;
+            width: 2em !important;
+            min-width: 2em !important;
+            height: 2em !important;
+            margin: 0 !important;
+            order: 1 !important;
+            flex-shrink: 0 !important;
+            box-sizing: border-box !important;
+        }
+
+        .swal2-popup.swal2-toast .swal2-title {
+            order: 2 !important;
+            font-size: 0.88rem !important;
+            font-weight: 600 !important;
+            line-height: 1.4 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            color: inherit !important;
+            flex: 1 1 auto !important;
+            text-align: left !important;
+        }
+
+        .swal2-popup.swal2-toast .swal2-close {
+            order: 3 !important;
+            width: 24px !important;
+            height: 24px !important;
+            font-size: 18px !important;
+            line-height: 1 !important;
+            color: currentColor !important;
+            opacity: 0.55 !important;
+            margin: 0 0 0 4px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+            background: transparent !important;
+            border: none !important;
+            cursor: pointer !important;
+            transition: opacity 0.2s ease, transform 0.2s ease !important;
+        }
+        .swal2-popup.swal2-toast .swal2-close:hover {
+            opacity: 1 !important;
+            transform: scale(1.1) !important;
+        }
+
+        .swal2-popup.swal2-toast .swal2-timer-progress-bar {
+            height: 3px !important;
+            border-radius: 0 0 12px 12px !important;
+            bottom: 0 !important;
+            left: 0 !important;
+        }
+
+        /* ── TOAST WARNA: success, error, warning, info ── */
+        .swal2-popup.swal2-toast.swal2-icon-success  { background: #F0FDF4 !important; border-top: 3px solid #10B981 !important; color: #065F46 !important; }
+        .swal2-popup.swal2-toast.swal2-icon-success .swal2-timer-progress-bar { background: #10B981 !important; }
+
+        .swal2-popup.swal2-toast.swal2-icon-error    { background: #FEF2F2 !important; border-top: 3px solid #EF4444 !important; color: #991B1B !important; }
+        .swal2-popup.swal2-toast.swal2-icon-error .swal2-timer-progress-bar { background: #EF4444 !important; }
+
+        .swal2-popup.swal2-toast.swal2-icon-warning  { background: #FFFBEB !important; border-top: 3px solid #F59E0B !important; color: #92400E !important; }
+        .swal2-popup.swal2-toast.swal2-icon-warning .swal2-timer-progress-bar { background: #F59E0B !important; }
+
+        .swal2-popup.swal2-toast.swal2-icon-info     { background: #F0F9FF !important; border-top: 3px solid #0EA5E9 !important; color: #0369A1 !important; }
+        .swal2-popup.swal2-toast.swal2-icon-info .swal2-timer-progress-bar { background: #0EA5E9 !important; }
+
+        /* ── TOAST ROLE override (desktop) ── */
+        .swal-customer.swal2-toast { border-top: 3px solid #0EA5E9 !important; }
+        .swal-admin.swal2-toast    { border-top: 3px solid #1565C0 !important; }
+        .swal-pemilik.swal2-toast  { border-top: 3px solid #0284C7 !important; }
+
+        /* ================================================================
+           POPUP (non-toast) — Modal dialog untuk konfirmasi penting
+        ================================================================ */
+        .swal-customer.swal2-popup:not(.swal2-toast) {
             border-top: 4px solid #4A90A4 !important;
             border-radius: 18px !important;
             box-shadow: 0 20px 60px rgba(74,144,164,.22) !important;
             padding: 2rem 1.75rem 1.5rem !important;
         }
-        .swal-customer .swal2-title  { color: #1A4F5E !important; font-weight: 700 !important; font-size: 1.25rem !important; letter-spacing: -0.3px !important; }
-        .swal-customer .swal2-html-container { color: #3A6B78 !important; font-size: 0.92rem !important; line-height: 1.6 !important; }
-        .swal-customer .swal2-timer-progress-bar { background: linear-gradient(90deg,#4A90A4,#6DB8CC) !important; height: 3px !important; }
-        .swal-customer .swal2-footer { border-top: 1px solid #D0EEF5 !important; color: #78909C !important; font-size: 0.8rem !important; }
-        .swal-customer.swal2-toast { border-left: 4px solid #4A90A4 !important; border-radius: 12px !important; background: #EAF7FB !important; color: #1A4F5E !important; box-shadow: 0 6px 24px rgba(74,144,164,.18) !important; }
+        .swal-customer:not(.swal2-toast) .swal2-title  { color: #1A4F5E !important; font-weight: 700 !important; font-size: 1.2rem !important; letter-spacing: -0.3px !important; }
+        .swal-customer:not(.swal2-toast) .swal2-html-container { color: #3A6B78 !important; font-size: 0.9rem !important; line-height: 1.6 !important; }
+        .swal-customer:not(.swal2-toast) .swal2-timer-progress-bar { background: linear-gradient(90deg,#4A90A4,#6DB8CC) !important; height: 3px !important; }
+        .swal-customer:not(.swal2-toast) .swal2-footer { border-top: 1px solid #D0EEF5 !important; color: #78909C !important; font-size: 0.8rem !important; }
 
-        /* -- ADMIN: Biru profesional -- */
-        .swal-admin.swal2-popup {
+        .swal-admin.swal2-popup:not(.swal2-toast) {
             border-top: 4px solid #1565C0 !important;
             border-radius: 14px !important;
             box-shadow: 0 16px 48px rgba(21,101,192,.18) !important;
             padding: 2rem 1.75rem 1.5rem !important;
         }
-        .swal-admin .swal2-title  { color: #0D47A1 !important; font-weight: 800 !important; font-size: 1.2rem !important; }
-        .swal-admin .swal2-html-container { color: #1A2B3C !important; font-size: 0.9rem !important; line-height: 1.6 !important; }
-        .swal-admin .swal2-timer-progress-bar { background: linear-gradient(90deg,#1565C0,#1E88E5) !important; height: 3px !important; }
-        .swal-admin .swal2-footer { border-top: 1px solid #BBDEFB !important; color: #546E7A !important; font-size: 0.8rem !important; }
-        .swal-admin.swal2-toast { border-left: 4px solid #1565C0 !important; border-radius: 10px !important; background: #E3F0FD !important; color: #0D47A1 !important; box-shadow: 0 6px 24px rgba(21,101,192,.15) !important; }
+        .swal-admin:not(.swal2-toast) .swal2-title  { color: #0D47A1 !important; font-weight: 800 !important; font-size: 1.15rem !important; }
+        .swal-admin:not(.swal2-toast) .swal2-html-container { color: #1A2B3C !important; font-size: 0.88rem !important; line-height: 1.6 !important; }
+        .swal-admin:not(.swal2-toast) .swal2-timer-progress-bar { background: linear-gradient(90deg,#1565C0,#1E88E5) !important; height: 3px !important; }
+        .swal-admin:not(.swal2-toast) .swal2-footer { border-top: 1px solid #BBDEFB !important; color: #546E7A !important; font-size: 0.8rem !important; }
 
-        /* -- PEMILIK: Biru langit premium -- */
-        .swal-pemilik.swal2-popup {
+        .swal-pemilik.swal2-popup:not(.swal2-toast) {
             border-top: 4px solid #0284C7 !important;
             border-radius: 18px !important;
             box-shadow: 0 20px 60px rgba(2,132,199,.18) !important;
             background: #F0F9FF !important;
             padding: 2rem 1.75rem 1.5rem !important;
         }
-        .swal-pemilik .swal2-title  { color: #0C4A6E !important; font-weight: 800 !important; font-size: 1.25rem !important; }
-        .swal-pemilik .swal2-html-container { color: #0369A1 !important; font-size: 0.92rem !important; line-height: 1.6 !important; }
-        .swal-pemilik .swal2-timer-progress-bar { background: linear-gradient(90deg,#0284C7,#0EA5E9) !important; height: 3px !important; }
-        .swal-pemilik .swal2-footer { border-top: 1px solid #BAE6FD !important; color: #0369A1 !important; font-size: 0.8rem !important; }
-        .swal-pemilik.swal2-toast { border-left: 4px solid #0284C7 !important; border-radius: 12px !important; background: #E0F2FE !important; color: #0C4A6E !important; box-shadow: 0 6px 24px rgba(2,132,199,.15) !important; }
+        .swal-pemilik:not(.swal2-toast) .swal2-title  { color: #0C4A6E !important; font-weight: 800 !important; font-size: 1.2rem !important; }
+        .swal-pemilik:not(.swal2-toast) .swal2-html-container { color: #0369A1 !important; font-size: 0.9rem !important; line-height: 1.6 !important; }
+        .swal-pemilik:not(.swal2-toast) .swal2-timer-progress-bar { background: linear-gradient(90deg,#0284C7,#0EA5E9) !important; height: 3px !important; }
+        .swal-pemilik:not(.swal2-toast) .swal2-footer { border-top: 1px solid #BAE6FD !important; color: #0369A1 !important; font-size: 0.8rem !important; }
 
-        /* -- SweetAlert buttons -- */
+        /* Tombol popup */
         .swal2-confirm, .swal2-cancel {
             border-radius: 8px !important; font-weight: 600 !important;
             font-size: 0.875rem !important; padding: 0.55rem 1.4rem !important;
@@ -555,8 +725,114 @@
             border: none !important;
         }
         .swal2-confirm:hover { filter: brightness(1.08) !important; transform: translateY(-1px) !important; box-shadow: 0 4px 14px rgba(0,0,0,.15) !important; }
-        .swal2-icon { border-width: 2px !important; width: 4.5rem !important; height: 4.5rem !important; margin: 0 auto 1rem !important; }
-        .swal2-icon .swal2-icon-content { font-size: 2.4rem !important; }
+        .swal2-popup:not(.swal2-toast) .swal2-icon {
+            font-size: 0.82em !important;
+            margin: 0.75rem auto 0.5rem !important;
+        }
+
+        /* ================================================================
+           MOBILE OVERRIDES — ≤576px
+           Prinsip mobile-first: compact, bottom-anchored, full-width CTA
+        ================================================================ */
+        @media (max-width: 576px) {
+
+            /* Toast container mobile: diposisikan di bottom-center dengan padding aman */
+            body.swal2-toast-shown .swal2-container,
+            body.swal2-toast-shown .swal2-container.swal2-bottom-end,
+            body.swal2-toast-shown .swal2-container.swal2-top-end,
+            body.swal2-toast-shown .swal2-container.swal2-top-start,
+            body.swal2-toast-shown .swal2-container.swal2-bottom {
+                inset: auto 0 16px 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                bottom: 16px !important;
+                top: auto !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                transform: none !important;
+                padding: 0 16px !important;
+                align-items: center !important;
+                justify-content: flex-end !important;
+                pointer-events: none !important;
+            }
+
+            .swal2-popup.swal2-toast {
+                width: 100% !important;
+                max-width: calc(100vw - 32px) !important;
+                min-width: 0 !important;
+                padding: 10px 14px !important;
+                border-radius: 12px !important;
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18) !important;
+                margin: 0 auto !important;
+                pointer-events: auto !important;
+                gap: 10px !important;
+            }
+
+            .swal2-popup.swal2-toast .swal2-title {
+                font-size: 0.82rem !important;
+                line-height: 1.35 !important;
+            }
+
+            .swal2-popup.swal2-toast .swal2-icon {
+                font-size: 13px !important;
+            }
+
+            /* WA Float mobile adjustment */
+            .wa-float {
+                width: 48px !important;
+                height: 48px !important;
+                bottom: 20px !important;
+                right: 16px !important;
+            }
+            .wa-float svg {
+                width: 48px !important;
+                height: 48px !important;
+            }
+
+            /* Popup: tidak fullscreen, compact, bottom-sheet feel */
+            .swal2-popup:not(.swal2-toast) {
+                width: calc(100vw - 32px) !important;
+                max-width: 360px !important;
+                margin: auto !important;
+                padding: 1.4rem 1.2rem 1.1rem !important;
+                border-radius: 16px !important;
+            }
+            .swal2-popup:not(.swal2-toast) .swal2-title {
+                font-size: 1rem !important;
+                line-height: 1.3 !important;
+                padding: 0 !important;
+                margin-bottom: 0.5rem !important;
+            }
+            .swal2-popup:not(.swal2-toast) .swal2-html-container {
+                font-size: 0.82rem !important;
+                margin: 0.4rem 0 !important;
+            }
+            .swal2-popup:not(.swal2-toast) .swal2-icon {
+                font-size: 0.72em !important;
+                margin: 0.5rem auto 0.4rem !important;
+            }
+
+            /* Tombol: stack vertikal, full-width di mobile */
+            .swal2-popup:not(.swal2-toast) .swal2-actions {
+                flex-direction: column !important;
+                gap: 8px !important;
+                padding: 0.5rem 0 0 !important;
+                width: 100% !important;
+            }
+            .swal2-popup:not(.swal2-toast) .swal2-confirm,
+            .swal2-popup:not(.swal2-toast) .swal2-cancel {
+                width: 100% !important;
+                padding: 0.65rem 1rem !important;
+                font-size: 0.875rem !important;
+                justify-content: center !important;
+            }
+            .swal2-popup:not(.swal2-toast) .swal2-footer {
+                font-size: 0.72rem !important;
+                padding: 0.5rem 0 0 !important;
+                margin-top: 0.5rem !important;
+                border-top: 1px solid rgba(0,0,0,.06) !important;
+            }
+        }
 
         /* ===================================================================
            PRODUCT CARD (shared across welcome & katalog)
@@ -604,17 +880,51 @@
         /* ===================================================================
            RESPONSIVE
         =================================================================== */
-        @media (max-width: 768px) {
-            .navbar { padding: 0.5rem 1rem; }
-            .page-header { padding: 1rem 1.25rem; }
+        @media (max-width: 992px) {
+            .navbar {
+                padding: 0.5rem 0.75rem;
+                width: 100% !important;
+            }
+            .navbar > .container-fluid {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
             .navbar-collapse {
                 background: rgba(13,17,23,0.98);
                 border-radius: 12px;
                 margin-top: 0.5rem;
                 padding: 0.75rem;
                 border: 1px solid var(--border-subtle);
+                width: 100%;
             }
             .nav-link.active::after { display: none; }
+            .page-header { padding: 1rem 1.25rem; }
+        }
+
+        @media (max-width: 576px) {
+            .navbar {
+                padding: 0.4rem 0.5rem;
+            }
+            .navbar-brand img {
+                height: 34px;
+            }
+            /* Harga — sesuaikan ukuran font untuk layar kecil */
+            .price-val {
+                font-size: 1.9rem !important;
+                letter-spacing: -0.5px !important;
+            }
+            .price-currency {
+                font-size: 1rem !important;
+            }
+            .price-unit {
+                font-size: 12px !important;
+            }
+            .price-box {
+                padding: 1.1rem 1rem !important;
+            }
+            .detail-title {
+                font-size: 24px !important;
+            }
         }
     </style>
     @yield('extra-css')
@@ -656,8 +966,19 @@
                         {{-- Customer only --}}
                         @if(auth()->user()->isCustomer())
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('cart') ? 'active' : '' }}" href="{{ route('cart') }}">
+                                <a class="nav-link {{ request()->routeIs('cart') ? 'active' : '' }} position-relative" href="{{ route('cart') }}" id="nav-cart-link">
                                     <i class="bi bi-cart3"></i> Keranjang
+                                    @php $cartCount = array_sum(session()->get('cart', [])); @endphp
+                                    @if($cartCount > 0)
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" id="cart-badge"
+                                              style="background:#0EA5E9;font-size:10px;min-width:18px;height:18px;display:flex;align-items:center;justify-content:center;top:-2px!important;right:-4px;left:auto;transform:none!important">
+                                            {{ $cartCount > 99 ? '99+' : $cartCount }}
+                                        </span>
+                                    @else
+                                        <span class="position-absolute badge rounded-pill d-none" id="cart-badge"
+                                              style="background:#0EA5E9;font-size:10px;min-width:18px;height:18px;display:flex;align-items:center;justify-content:center;top:-2px!important;right:-4px;left:auto;transform:none!important">
+                                        </span>
+                                    @endif
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -748,8 +1069,49 @@
     <!-- ===== FOOTER ===== -->
     <footer class="footer">
         <div class="container">
-            <p><i class="bi bi-fish me-1" style="color:var(--gold)"></i> <strong>Athaya Fish Farm</strong></p>
-            <p>Sistem Informasi E-Commerce Budidaya Ikan &copy; {{ date('Y') }}</p>
+            <div class="row g-4 py-2" style="text-align:left;">
+                <div class="col-md-4">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:.75rem;">
+                        <i class="bi bi-fish" style="color:var(--gold);font-size:1.3rem;"></i>
+                        <strong style="color:var(--text-light);font-size:1rem;">Athaya Fish Farm</strong>
+                    </div>
+                    <p style="font-size:13px;line-height:1.7;">Platform e-commerce ikan budidaya berkualitas. Dari kolam langsung ke meja makanmu.</p>
+                    <a href="https://wa.me/6289613130130" target="_blank" style="color:#25D366;font-size:13px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+                        <i class="bi bi-whatsapp"></i> +62 896-1313-0130
+                    </a>
+                </div>
+                <div class="col-md-2">
+                    <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-light);margin-bottom:.75rem;">Navigasi</p>
+                    <ul style="list-style:none;padding:0;margin:0;font-size:13px;">
+                        <li style="margin-bottom:.4rem;"><a href="{{ route('home') }}">Beranda</a></li>
+                        <li style="margin-bottom:.4rem;"><a href="{{ route('katalog.index') }}">Katalog Produk</a></li>
+                        <li style="margin-bottom:.4rem;"><a href="{{ route('home') }}#tentang-kami">Tentang Kami</a></li>
+                        @auth
+                        <li style="margin-bottom:.4rem;"><a href="{{ route('budidaya.create') }}">Jasa Budidaya</a></li>
+                        @endauth
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-light);margin-bottom:.75rem;">Jam Operasional</p>
+                    <p style="font-size:13px;margin-bottom:.4rem;"><i class="bi bi-clock me-2" style="color:var(--gold);"></i>Senin – Sabtu</p>
+                    <p style="font-size:13px;margin-bottom:.75rem;padding-left:1.4rem;">08.00 – 17.00 WIB</p>
+                    <p style="font-size:12px;color:#EF4444;margin:0;"><i class="bi bi-x-circle me-2"></i>Minggu & Hari Libur Tutup</p>
+                </div>
+                <div class="col-md-3">
+                    <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-light);margin-bottom:.75rem;">Pembayaran</p>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                        <span style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--text-light);">Midtrans</span>
+                        <span style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--text-light);">Transfer Bank</span>
+                        <span style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--text-light);">E-Wallet</span>
+                        <span style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--text-light);">QRIS</span>
+                    </div>
+                </div>
+            </div>
+            <hr style="border-color:rgba(255,255,255,.08);margin:.75rem 0;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;font-size:12px;">
+                <p style="margin:0;">&copy; {{ date('Y') }} <strong style="color:var(--text-light);">Athaya Fish Farm</strong>. Hak cipta dilindungi.</p>
+                <p style="margin:0;">Dibuat dengan <i class="bi bi-heart-fill" style="color:#EF4444;"></i> untuk petani ikan Indonesia</p>
+            </div>
         </div>
     </footer>
 
@@ -817,17 +1179,27 @@
 
         const theme = ROLE_THEME[__ROLE__] || ROLE_THEME['guest'];
 
-        // ─── TOAST ─────────────────────────────────────────
+        // ─── DEVICE DETECTION ───────────────────────────────
+        const isMobile = window.innerWidth <= 576;
+
+        // ─── TOAST (snackbar non-blocking) ──────────────────
+        // Mobile: bottom-center, compact, no backdrop, icon kecil
+        // Desktop: role-based position, themed
         const Toast = Swal.mixin({
             toast: true,
-            position: theme.toastPosition,
+            position: isMobile ? 'bottom' : theme.toastPosition,
             showConfirmButton: false,
-            timer: 4000,
+            showCloseButton: true,           // X agar bisa dismiss manual di semua device
+            timer: isMobile ? 3500 : 4500,
             timerProgressBar: true,
-            background: theme.background,
-            color: theme.color,
-            customClass: theme.customClass,
+            customClass: isMobile ? {} : theme.customClass,
+            width: 'auto',
+            background: isMobile ? undefined : theme.background,
+            color: isMobile ? undefined : theme.color,
             didOpen: (toast) => {
+                // Pause saat di-tap (mobile) atau hover (desktop)
+                toast.addEventListener('touchstart', Swal.stopTimer, { passive: true });
+                toast.addEventListener('touchend',   Swal.resumeTimer, { passive: true });
                 toast.onmouseenter = Swal.stopTimer;
                 toast.onmouseleave = Swal.resumeTimer;
             }
@@ -873,24 +1245,13 @@
             Toast.fire({ icon: 'info', title: @json(session('info')), timer: 5000 });
         @endif
 
-        // ─── FLASH: LOGIN BERHASIL (ROLE-AWARE) ─────────────
+        // ─── FLASH: LOGIN BERHASIL (ROLE-AWARE TOAST) ────────
         @if(session('login_success'))
-            (() => {
-                const roleConfigs = {
-                    customer: { title: 'Selamat Datang', confirmButtonText: 'Mulai Belanja', footer: '<small>Nikmati produk segar Athaya Fish Farm</small>', backdrop: 'rgba(74,144,164,0.15)' },
-                    admin:    { title: 'Panel Admin', confirmButtonText: 'Ke Dashboard', footer: '<small>Sistem berjalan normal</small>', backdrop: 'rgba(21,101,192,0.12)' },
-                    pemilik:  { title: 'Selamat Datang, Pemilik', confirmButtonText: 'Lihat Laporan', footer: '<small>Pantau bisnis Anda hari ini</small>', backdrop: 'rgba(2,132,199,0.12)' },
-                    guest:    { title: 'Selamat Datang', confirmButtonText: 'OK', footer: '', backdrop: true },
-                };
-                const rc = roleConfigs[__ROLE__] || roleConfigs['guest'];
-                rolePopup(Object.assign({
-                    icon: 'success',
-                    text: @json(session('login_success')),
-                    showConfirmButton: true,
-                    timer: 5000,
-                    timerProgressBar: true,
-                }, rc));
-            })();
+            Toast.fire({
+                icon: 'success',
+                title: @json(session('login_success')),
+                timer: 4500
+            });
         @endif
 
         // ─── FLASH: PAYMENT SUCCESS ──────────────────────────
@@ -1007,6 +1368,26 @@
             }, { threshold: 0.12 });
             revealEls.forEach(el => observer.observe(el));
         });
+        // ─── CART COUNT REAL-TIME (Customer only) ───────────
+        @auth
+        @if(auth()->user()->isCustomer())
+        (function updateCartBadge() {
+            const badge = document.getElementById('cart-badge');
+            if (!badge) return;
+            fetch('{{ route("cart.count") }}')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.count > 0) {
+                        badge.textContent = data.count > 99 ? '99+' : data.count;
+                        badge.classList.remove('d-none');
+                        badge.style.display = 'flex';
+                    } else {
+                        badge.classList.add('d-none');
+                    }
+                }).catch(() => {});
+        })();
+        @endif
+        @endauth
     </script>
     @stack('scripts')
     @yield('extra-js')

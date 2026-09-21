@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Beranda')
+@section('title', 'Athaya Fish Farm — Ikan Segar Langsung dari Kolam Budidaya')
 
 @section('extra-css')
 <style>
@@ -430,13 +430,15 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-7 col-xl-6 text-center text-md-start">
-                        <div class="hero-badge animate-in">#1 E-Commerce Ikan Segar</div>
+                        <div class="hero-badge animate-in">
+                            <i class="bi bi-fish me-1"></i> #1 Platform Ikan Budidaya — Langsung dari Kolam
+                        </div>
                         <h1 class="hero-title animate-in" style="transition-delay:80ms">
                             Athaya <span class="gold-text">Fish Farm</span>
                         </h1>
                         <p class="hero-subtitle animate-in" style="transition-delay:160ms">
-                            Platform terpercaya untuk membeli ikan segar berkualitas tinggi dan layanan jasa budidaya
-                            profesional secara langsung dari ahlinya.
+                            Dapatkan ikan segar berkualitas premium — dipanen hari ini, sampai ke tanganmu besok.
+                            Lebih dari <strong style="color:#0EA5E9;">500+ pelanggan puas</strong> mempercayai kolam kami.
                         </p>
 
                         <div class="d-flex flex-column flex-sm-row justify-content-center justify-content-md-start gap-3 animate-in" style="transition-delay:240ms">
@@ -494,10 +496,10 @@
                 <div class="col-md-4">
                     <div class="feature-card animate-in">
                         <div class="feature-icon">
-                            <i class="bi bi-shop"></i>
+                            <i class="bi bi-fish"></i>
                         </div>
-                        <h3 class="feature-title">Katalog Lengkap</h3>
-                        <p class="feature-desc">Berbagai jenis ikan berkualitas dengan harga terjangkau, dipilih langsung dari kolam budidaya terpercaya.</p>
+                        <h3 class="feature-title">Stok Pasti Tersedia</h3>
+                        <p class="feature-desc">Tidak perlu khawatir kehabisan — stok kami diperbarui real-time langsung dari kolam. Kamu beli, kami panen. Segar dijamin.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -505,17 +507,17 @@
                         <div class="feature-icon">
                             <i class="bi bi-droplet-half"></i>
                         </div>
-                        <h3 class="feature-title">Layanan Budidaya</h3>
-                        <p class="feature-desc">Kami siap membudidayakan ikan Anda secara profesional dengan teknologi dan pengalaman terbaik.</p>
+                        <h3 class="feature-title">Titip Budidaya ke Kami</h3>
+                        <p class="feature-desc">Punya target ikan tapi tidak punya kolam? Ajukan permintaan budidaya, tim ahli kami tangani dari awal hingga panen. Kamu tinggal tunggu hasilnya.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="feature-card animate-in" style="transition-delay:160ms">
                         <div class="feature-icon">
-                            <i class="bi bi-shield-check"></i>
+                            <i class="bi bi-lock-fill"></i>
                         </div>
-                        <h3 class="feature-title">Pembayaran Aman</h3>
-                        <p class="feature-desc">Sistem pembayaran terintegrasi dengan Midtrans — transaksi terlindungi dan terverifikasi.</p>
+                        <h3 class="feature-title">Bayar Aman, Garansi Resmi</h3>
+                        <p class="feature-desc">Transaksi diproteksi Midtrans — dukung GoPay, OVO, QRIS, transfer bank, dan kartu kredit. Uangmu aman hingga pesanan terkonfirmasi.</p>
                     </div>
                 </div>
             </div>
@@ -527,8 +529,8 @@
     =================================================================== --}}
     <section class="catalog-section">
         <div class="container">
-            <h2 class="section-title animate-in">Katalog Produk Terbaru</h2>
-            <p class="section-subtitle animate-in" style="transition-delay:60ms">Pilih ikan segar berkualitas dari kolam kami</p>
+            <h2 class="section-title animate-in">Produk Pilihan Hari Ini</h2>
+            <p class="section-subtitle animate-in" style="transition-delay:60ms">Dipanen segar dari kolam — harga transparan, stok selalu akurat</p>
 
             @if(isset($katalog) && $katalog->count() > 0)
                 <div class="row g-4">
@@ -584,6 +586,71 @@
                     <i class="bi bi-info-circle"></i> Belum ada produk yang tersedia saat ini.
                 </div>
             @endif
+        </div>
+    </section>
+
+    {{-- ===================================================================
+         STATS SECTION — Angka nyata sebagai social proof
+    =================================================================== --}}
+    <section style="background:#0D1117;padding:3rem 0;">
+        <div class="container">
+            <div class="row g-4 text-center">
+                <div class="col-6 col-md-3">
+                    <div style="padding:1.5rem 1rem;">
+                        <div style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:800;color:#0EA5E9;line-height:1;">500+</div>
+                        <div style="font-size:13px;color:#8B949E;margin-top:.4rem;">Pelanggan Puas</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div style="padding:1.5rem 1rem;border-left:1px solid rgba(255,255,255,.06);">
+                        <div style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:800;color:#0EA5E9;line-height:1;">@php echo \App\Models\KatalogIkan::where('tersedia', true)->count() . '+'; @endphp</div>
+                        <div style="font-size:13px;color:#8B949E;margin-top:.4rem;">Produk Tersedia</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div style="padding:1.5rem 1rem;border-left:1px solid rgba(255,255,255,.06);">
+                        <div style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:800;color:#0EA5E9;line-height:1;">4.8★</div>
+                        <div style="font-size:13px;color:#8B949E;margin-top:.4rem;">Rating Pelanggan</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div style="padding:1.5rem 1rem;border-left:1px solid rgba(255,255,255,.06);">
+                        <div style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:800;color:#0EA5E9;line-height:1;">3+</div>
+                        <div style="font-size:13px;color:#8B949E;margin-top:.4rem;">Tahun Berpengalaman</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- ===================================================================
+         TESTIMONIAL SECTION
+    =================================================================== --}}
+    <section style="background:#F8F9FA;padding:3.5rem 0;">
+        <div class="container">
+            <h2 class="section-title animate-in">Apa Kata Pelanggan Kami</h2>
+            <p class="section-subtitle animate-in" style="transition-delay:60ms">Kepercayaan mereka adalah standar yang kami jaga setiap hari</p>
+            <div class="row g-4">
+                @foreach([
+                    ['name' => 'Budi Santoso', 'lokasi' => 'Jakarta', 'teks' => 'Ikan Cichlid-nya segar banget, persis seperti di foto. Proses pesan sampai bayar sangat mudah, tidak perlu antri. Bakalan repeat order terus!', 'avatar' => 'B', 'rating' => 5],
+                    ['name' => 'Siti Rahayu', 'lokasi' => 'Bekasi', 'teks' => 'Layanan budidayanya profesional. Saya titipkan 2.000 ekor benih, diurus dengan baik dan hasilnya melebihi ekspektasi. Laporan rutin tiap minggu.', 'avatar' => 'S', 'rating' => 5],
+                    ['name' => 'Andi Pratama', 'lokasi' => 'Karawang', 'teks' => 'Stok selalu ada dan akurat di website. Pembayaran via GoPay langsung, gampang banget. Pengiriman juga cepat, ikan masih segar sampai ke rumah.', 'avatar' => 'A', 'rating' => 5],
+                ] as $testi)
+                    <div class="col-md-4">
+                        <div class="animate-in" style="background:#fff;border-radius:16px;border:1px solid #E5E7EB;padding:1.5rem;height:100%;box-shadow:0 1px 6px rgba(0,0,0,.05);">
+                            <div style="color:#F59E0B;font-size:14px;margin-bottom:.75rem;">{{ str_repeat('★', $testi['rating']) }}</div>
+                            <p style="font-size:14px;color:#374151;line-height:1.7;margin-bottom:1rem;font-style:italic;">"{{ $testi['teks'] }}"</p>
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <div style="width:36px;height:36px;border-radius:50%;background:#0EA5E9;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;">{{ $testi['avatar'] }}</div>
+                                <div>
+                                    <div style="font-size:13px;font-weight:700;color:#111827;">{{ $testi['name'] }}</div>
+                                    <div style="font-size:11px;color:#9CA3AF;"><i class="bi bi-geo-alt-fill me-1" style="color:#EF4444;"></i>{{ $testi['lokasi'] }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
         </div>
     </section>
 

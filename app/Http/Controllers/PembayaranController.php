@@ -33,6 +33,25 @@ class PembayaranController extends Controller
     }
 
     /**
+     * Generate URL publik (pakai APP_PUBLIC_URL jika diset, fallback ke route())
+     * Dipakai untuk Midtrans finish/callback redirect agar tidak menggunakan localhost
+     */
+    private function publicRoute(string $name, mixed $parameters = []): string
+    {
+        $publicBase = rtrim(config('app.public_url', config('app.url')), '/');
+        $localBase  = rtrim(config('app.url'), '/');
+
+        $generatedUrl = route($name, $parameters);
+
+        // Ganti base URL lokal dengan URL publik
+        if ($localBase && str_starts_with($generatedUrl, $localBase)) {
+            return $publicBase . substr($generatedUrl, strlen($localBase));
+        }
+
+        return $generatedUrl;
+    }
+
+    /**
      * Tampilkan halaman pembayaran dan generate Snap Token Midtrans
      */
     public function show(Pesanan $pesanan): View
@@ -68,47 +87,7 @@ class PembayaranController extends Controller
                     ]
                 );
 
-                // Bangun item details untuk Midtrans
-                $itemDetails = [];
-                foreach ($pesanan->detailPesanan as $detail) {
-                    $itemDetails[] = [
-                        'id'       => (string) ($detail->katalog_ikan_id ?? $detail->id),
-                        'price'    => (int) $detail->harga_satuan,
-                        'quantity' => (int) $detail->kuantitas,
-                        'name'     => substr($detail->katalogIkan->nama_produk ?? 'Produk Ikan', 0, 50),
-                    ];
-
-                    // Tambah biaya budidaya sebagai item terpisah jika ada
-                    if ($detail->dengan_layanan_budidaya && $detail->biaya_budidaya > 0) {
-                        $itemDetails[] = [
-                            'id'       => 'BUDIDAYA-' . $detail->id,
-                            'price'    => (int) $detail->biaya_budidaya,
-                            'quantity' => 1,
-                            'name'     => 'Layanan Budidaya (' . $detail->durasi_budidaya_hari . ' hari)',
-                        ];
-                    }
-                }
-
-                // Data pelanggan
-                $customer = $pesanan->customer;
-
-                $params = [
-                    'transaction_details' => [
-                        'order_id'     => $orderId,
-                        'gross_amount' => (int) $pesanan->total_pembayaran,
-                    ],
-                    'customer_details' => [
-                        'first_name' => $customer->name ?? 'Customer',
-                        'email'      => $customer->email ?? '',
-                        'phone'      => $customer->phone ?? '',
-                    ],
-                    'item_details' => $itemDetails,
-                    'callbacks'    => [
-                        'finish' => route('pembayaran.status', $pesanan),
-                    ],
-                ];
-
-                $snapToken = Snap::getSnapToken($params);
+                $snapToken = Snap::getSnapToken($this->buildSnapParams($pesanan, $orderId));
 
                 // Simpan snap token ke database agar tidak perlu generate ulang
                 $pembayaran->update(['midtrans_snap_token' => $snapToken]);
@@ -219,6 +198,49 @@ class PembayaranController extends Controller
     }
 
     /**
+     * Build Midtrans transaction params (shared by show() and getSnapToken())
+     */
+    private function buildSnapParams(Pesanan $pesanan, string $orderId): array
+    {
+        $itemDetails = [];
+        foreach ($pesanan->detailPesanan as $detail) {
+            $itemDetails[] = [
+                'id'       => (string) ($detail->katalog_ikan_id ?? $detail->id),
+                'price'    => (int) $detail->harga_satuan,
+                'quantity' => (int) $detail->kuantitas,
+                'name'     => substr($detail->katalogIkan->nama_produk ?? 'Produk Ikan', 0, 50),
+            ];
+
+            if ($detail->dengan_layanan_budidaya && $detail->biaya_budidaya > 0) {
+                $itemDetails[] = [
+                    'id'       => 'BUDIDAYA-' . $detail->id,
+                    'price'    => (int) $detail->biaya_budidaya,
+                    'quantity' => 1,
+                    'name'     => 'Layanan Budidaya (' . $detail->durasi_budidaya_hari . ' hari)',
+                ];
+            }
+        }
+
+        $customer = $pesanan->customer;
+
+        return [
+            'transaction_details' => [
+                'order_id'     => $orderId,
+                'gross_amount' => (int) $pesanan->total_pembayaran,
+            ],
+            'customer_details' => [
+                'first_name' => $customer->name ?? 'Customer',
+                'email'      => $customer->email ?? '',
+                'phone'      => $customer->nomor_telepon ?? $customer->phone ?? '',
+            ],
+            'item_details' => $itemDetails,
+            'callbacks'    => [
+                'finish' => $this->publicRoute('pembayaran.status', $pesanan),
+            ],
+        ];
+    }
+
+    /**
      * [AJAX] Dipanggil dari onSuccess Snap popup.
      * Verifikasi status transaksi langsung ke Midtrans API & update DB.
      * Tidak bergantung pada webhook — berfungsi di localhost maupun production.
@@ -291,14 +313,14 @@ class PembayaranController extends Controller
     /**
      * Halaman status pembayaran setelah redirect dari Midtrans
      */
-    public function status(Pesanan $pesanan): View
+    public function status(Pesanan $pesanan): RedirectResponse
     {
         if ($pesanan->customer_id !== auth()->id()) {
             abort(403, 'Akses ditolak.');
         }
 
-        $pembayaran = $pesanan->pembayaran;
-        return view('pembayaran.status', compact('pesanan', 'pembayaran'));
+        return redirect()->route('pesanan.show', $pesanan->id)
+            ->with('info', 'Pembayaran Anda sedang kami proses. Status pesanan akan terupdate otomatis.');
     }
 
     /**
@@ -334,42 +356,7 @@ class PembayaranController extends Controller
                 ]
             );
 
-            // Bangun item details
-            $itemDetails = [];
-            foreach ($pesanan->detailPesanan as $detail) {
-                $itemDetails[] = [
-                    'id'       => (string) ($detail->katalog_ikan_id ?? $detail->id),
-                    'price'    => (int) $detail->harga_satuan,
-                    'quantity' => (int) $detail->kuantitas,
-                    'name'     => substr($detail->katalogIkan->nama_produk ?? 'Produk Ikan', 0, 50),
-                ];
-
-                if ($detail->dengan_layanan_budidaya && $detail->biaya_budidaya > 0) {
-                    $itemDetails[] = [
-                        'id'       => 'BUDIDAYA-' . $detail->id,
-                        'price'    => (int) $detail->biaya_budidaya,
-                        'quantity' => 1,
-                        'name'     => 'Layanan Budidaya (' . $detail->durasi_budidaya_hari . ' hari)',
-                    ];
-                }
-            }
-
-            $customer = $pesanan->customer;
-
-            $params = [
-                'transaction_details' => [
-                    'order_id'     => $orderId,
-                    'gross_amount' => (int) $pesanan->total_pembayaran,
-                ],
-                'customer_details' => [
-                    'first_name' => $customer->name ?? 'Customer',
-                    'email'      => $customer->email ?? '',
-                    'phone'      => $customer->phone ?? '',
-                ],
-                'item_details' => $itemDetails,
-            ];
-
-            $snapToken = Snap::getSnapToken($params);
+            $snapToken = Snap::getSnapToken($this->buildSnapParams($pesanan, $orderId));
             $pembayaran->update(['midtrans_snap_token' => $snapToken]);
 
             return response()->json(['snap_token' => $snapToken]);

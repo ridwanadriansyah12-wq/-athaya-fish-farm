@@ -61,6 +61,9 @@ Route::middleware('auth')->group(function () {
 
     // ── Keranjang & Pesanan (Customer) ────────────────────────────────────────
     Route::get('/cart', [PesananController::class, 'cart'])->name('cart');
+    Route::get('/cart/count', fn() => response()->json([
+        'count' => array_sum(session()->get('cart', []))
+    ]))->name('cart.count');
     Route::post('/cart/add/{katalog}', [PesananController::class, 'addToCart'])->name('cart.add');
     Route::post('/cart/remove/{id}', [PesananController::class, 'removeFromCart'])->name('cart.remove');
     Route::post('/cart/update/{id}', [PesananController::class, 'updateCart'])->name('cart.update');
@@ -81,6 +84,7 @@ Route::middleware('auth')->group(function () {
     // ── Midtrans AJAX ─────────────────────────────────────────────────────────
     Route::post('/pembayaran/{pesanan}/snap-token', [PembayaranController::class, 'getSnapToken'])->name('pembayaran.snap-token');
     Route::post('/pembayaran/{pesanan}/success', [PembayaranController::class, 'handleSuccess'])->name('pembayaran.handle-success');
+    Route::get('/pembayaran/{pesanan}/status', [PembayaranController::class, 'status'])->name('pembayaran.status');
 });
 
 // ─── ADMIN ROUTES ─────────────────────────────────────────────────────────────

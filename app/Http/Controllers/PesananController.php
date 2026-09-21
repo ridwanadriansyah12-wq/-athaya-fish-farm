@@ -44,22 +44,34 @@ class PesananController extends Controller
      */
     public function addToCart(KatalogIkan $katalog, Request $request): RedirectResponse
     {
-        $qty = $request->input('qty', 1);
-        $cart = session()->get('cart', []);
-        
-        if (isset($cart[$katalog->id])) {
-            $cart[$katalog->id] += $qty;
-        } else {
-            $cart[$katalog->id] = $qty;
+        // Validasi: produk harus tersedia dan punya stok
+        if (!$katalog->tersedia || $katalog->stok <= 0) {
+            return back()->with('error', 'Maaf, produk ini sedang tidak tersedia.');
         }
 
+        $qty  = max(1, (int) $request->input('qty', 1));
+        $cart = session()->get('cart', []);
+
+        $currentQty = $cart[$katalog->id] ?? 0;
+        $newQty     = $currentQty + $qty;
+
+        // Cegah order melebihi stok
+        if ($newQty > $katalog->stok) {
+            $available = $katalog->stok - $currentQty;
+            if ($available <= 0) {
+                return back()->with('error', 'Produk sudah mencapai batas stok di keranjang kamu.');
+            }
+            $newQty = $katalog->stok;
+        }
+
+        $cart[$katalog->id] = $newQty;
         session()->put('cart', $cart);
 
         if ($request->input('action') === 'buy_now') {
             return redirect()->route('cart');
         }
 
-        return back()->with('success', 'Produk ditambahkan ke keranjang');
+        return back()->with('success', '✅ ' . $katalog->nama_produk . ' ditambahkan ke keranjang.');
     }
 
     public function removeFromCart(int $id): RedirectResponse
